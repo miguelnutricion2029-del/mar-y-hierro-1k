@@ -14,9 +14,9 @@
             --color-bg: #121212;
             --color-surface: #1e1e1e;
             --color-text: #F5F5F5;
-            --color-accent-pos: #00C49F; /* Verde: Positivo/Logrado */
-            --color-accent-neg: #FF8042; /* Naranja: Riesgo/Atención */
-            --color-progress: #A0AEC0;  /* Azul Suave: Progreso */
+            --color-accent-pos: #00C49F;
+            --color-accent-neg: #FF8042;
+            --color-progress: #A0AEC0;
             --color-divider: #333333;
         }
         body {
@@ -84,10 +84,10 @@
             <img src="tu_foto_de_perfil.jpg" alt="Foto de Miguel Siña" loading="lazy">
         </div>
         <div class="about-text">
-            <h3><i class="fas fa-user-circle"></i> Sobre mí </h3>
-            <p>Soy Miguel Siña, estudiante de nutrición y atleta en construcción.</p>
-            <p>Mar y Hierro 1K es mi laboratorio personal. Aquí documento mi proceso de recomposición corporal de 1000 días, aplicando la ciencia nutricional y la fisiología del deporte en mi propio cuerpo.</p>
-            <p>A los 47 años, decidí que la teoría no sirve de nada si no se aplica. Me formo académicamente con un solo objetivo: aprender para ayudar a quienes, como yo, buscan optimizar su salud. Hoy soy el sujeto de prueba sometiendo la teoría al estrés del hierro y al frío del mar.</p>
+            <h3><i class="fas fa-user-circle"></i> **Sobre Miguel Siña**</h3>
+            <p>Soy **Miguel Siña**, estudiante de nutrición y atleta en construcción.</p>
+            <p>**Mar y Hierro 1K** es mi laboratorio personal. Aquí documento mi proceso de recomposición corporal de **1000 días**, aplicando la ciencia nutricional y la fisiología del deporte en mi propio cuerpo.</p>
+            <p>A los 47 años, decidí que la teoría no sirve de nada si no se aplica. Me formo académicamente con un solo objetivo: **dominar la evidencia para ayudar a quienes, como yo, buscan optimizar su salud**. Hoy soy el sujeto de prueba sometiendo la teoría al estrés del hierro y al frío del mar.</p>
             <p style="color: var(--color-accent-pos);">Acompáñame a descubrir qué sucede cuando la ciencia se encuentra con la disciplina.</p>
         </div>
     </section>
@@ -108,7 +108,7 @@
             <button class="btn-toggle" onclick="document.getElementById('tech-data').style.display = document.getElementById('tech-data').style.display === 'block' ? 'none' : 'block';">
                 <i class="fas fa-microscope"></i> Ver Detalles Técnicos
             </button>
-            <button class="btn-toggle" style="background-color: var(--color-accent-pos);" onclick="alert('INSTRUCCIONES DE ACTUALIZACIÓN (GitHub Pages / Google Sheets):\n\n1. Abra su Hoja de Cálculo de Google Sheets.\n2. Añada una nueva fila con la fecha y los 9 datos nuevos.\n3. Recargue esta página web en su navegador. ¡Los datos se actualizarán automáticamente!');">
+            <button class="btn-toggle" style="background-color: var(--color-accent-pos);" onclick="alert('INSTRUCCIONES DE ACTUALIZACIÓN:\n\n1. Ve a tu archivo index.html en GitHub.\n2. Busca // ZONA DE EDICIÓN DE DATOS (al final del código).\n3. Copia la última línea de datos, modifícala con tus nuevos números del día 168 (o el que corresponda) y pégala abajo.\n4. ¡Guarda y confirma los cambios (Commit)!');">
                 <i class="fas fa-upload"></i> **¿Cómo Actualizo los Datos?**
             </button>
         </div>
@@ -132,7 +132,7 @@
 
     <section class="card">
         <h3><i class="fas fa-chart-area"></i> **Evolución y Tendencia de Biomarcadores**</h3>
-        <p style="font-size: 0.9em; color: var(--color-progress);">*Los gráficos se actualizan automáticamente desde Google Sheets.*</p>
+        <p style="font-size: 0.9em; color: var(--color-progress);">*Los gráficos se dibujan con los datos históricos guardados en este archivo.*</p>
         <div class="chart-grid">
             <div class="card chart-card"><canvas id="pesoChart"></canvas></div>
             <div class="card chart-card"><canvas id="grasaVisceralChart"></canvas></div>
@@ -194,11 +194,22 @@
 
 <script>
     // *******************************************************************
-    // ✅ URL FINAL CORREGIDA (API de Visualización, más estable)
+    // ⚠️ ZONA DE EDICIÓN DE DATOS (La única parte que editarás)
     // *******************************************************************
-    const DATA_SOURCE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJO4KEjVENFOmQ990F5qLySlLNDkK6IYScxL2R_onnjIDOGbA4PHHSnPla5VexqDsZc5aAEcjfsY7R/gviz/tq?tqx=out:json&gid=1001433176"; 
+    const historicalData = [
+        // Datos de simulación inicial (necesario para la tendencia visual)
+        { day: 1, date: '10/07/2025', peso: 105.0, grasaVisceral: 20, musculoEsqueletico: 28.5, grasaCorporal: 37.0, edadCorporal: 75, imc: 35.0, mb: 2050 },
+        { day: 75, date: '23/09/2025', peso: 104.0, grasaVisceral: 19, musculoEsqueletico: 28.9, grasaCorporal: 36.5, edadCorporal: 73, imc: 34.6, mb: 2035 },
+        // TUS DATOS REALES (Día 146 y 157)
+        { day: 146, date: '25/11/2025', peso: 103.3, grasaVisceral: 19, musculoEsqueletico: 29.0, grasaCorporal: 36.3, edadCorporal: 72, imc: 34.5, mb: 2024 },
+        { day: 157, date: '05/12/2025', peso: 100.6, grasaVisceral: 18, musculoEsqueletico: 29.7, grasaCorporal: 35.1, edadCorporal: 70, imc: 33.6, mb: 1990 } 
+        // A PARTIR DE AQUÍ DEBES AGREGAR TUS NUEVOS PUNTOS DE DATOS (Día 168, 177, etc.)
+    ];
+    // *******************************************************************
+    // FIN ZONA DE EDICIÓN DE DATOS
+    // *******************************************************************
     
-    // Nombres de las variables para la tabla de variación
+    
     const variableNames = {
         peso: 'Peso Total (Kg)',
         grasaVisceral: 'Grasa Visceral (Nivel)',
@@ -213,7 +224,6 @@
         const diff = current - previous;
         let color = '';
         
-        // Reglas de color para el diseño BioVis (Verde para progreso, Naranja para alerta)
         if (variableKey === 'peso' || variableKey === 'grasaVisceral' || variableKey === 'grasaCorporal' || variableKey === 'imc') {
             color = diff <= 0 ? 'var(--color-accent-pos)' : 'var(--color-accent-neg)';
         } else if (variableKey === 'musculoEsqueletico') {
@@ -226,12 +236,124 @@
     }
 
     async function loadDataAndDrawCharts() {
-        try {
-            const response = await fetch(DATA_SOURCE_URL);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}. Verifica la publicación de Google Sheets.`);
+        const latestData = historicalData[historicalData.length - 1];
+        const previousData = historicalData.length > 1 ? historicalData[historicalData.length - 2] : null;
+        
+        if (historicalData.length === 0) {
+            document.querySelector('.header h3').innerHTML = '⚠️ ERROR: No hay datos en el código.';
+            return;
+        }
+        
+        document.querySelector('.header h3').innerHTML = `Día **${latestData.day} / 1000** | Fase 1: **Recomposición y Cimientos** (${latestData.date})`;
+
+        const currentDataPoints = [
+            latestData.peso.toFixed(1), latestData.grasaVisceral, latestData.grasaCorporal.toFixed(1), 
+            latestData.musculoEsqueletico.toFixed(1), latestData.edadCorporal, latestData.mb, latestData.imc.toFixed(1)
+        ];
+        document.querySelectorAll('.current-data-grid strong').forEach((el, i) => { el.textContent = currentDataPoints[i]; });
+
+        // Actualizar Hitos
+        document.querySelector('.milestone-list li:nth-child(2) i').className = latestData.peso < 92.0 ? 'fas fa-check-circle' : 'fas fa-times-circle';
+        document.querySelector('.milestone-list li:nth-child(2)').className = latestData.peso < 92.0 ? 'complete' : 'incomplete';
+        document.querySelector('.milestone-list li:nth-child(2)').lastChild.textContent = ` Peso: < 92.0 kg (Actual: ${latestData.peso.toFixed(1)} kg)`;
+
+        document.querySelector('.milestone-list li:nth-child(3) i').className = latestData.grasaVisceral <= 14 ? 'fas fa-check-circle' : 'fas fa-times-circle';
+        document.querySelector('.milestone-list li:nth-child(3)').className = latestData.grasaVisceral <= 14 ? 'complete' : 'incomplete';
+        document.querySelector('.milestone-list li:nth-child(3)').lastChild.textContent = ` Grasa Visceral: Nivel 13 o 14 (Actual: ${latestData.grasaVisceral})`;
+        
+        if (previousData) {
+            const tableBody = document.querySelector('#variation-table tbody');
+            tableBody.innerHTML = '';
+            Object.keys(variableNames).forEach(key => {
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${variableNames[key]}</td>
+                    <td>${previousData[key].toFixed(1)}</td>
+                    <td>${latestData[key].toFixed(1)}</td>
+                    ${formatVariation(latestData[key], previousData[key], key)}
+                `;
+            });
+        }
+
+        drawCharts(historicalData);
+    }
+
+    function drawCharts(historicalData) {
+        Chart.getChart("pesoChart")?.destroy();
+        Chart.getChart("grasaVisceralChart")?.destroy();
+        Chart.getChart("musculoGrasaChart")?.destroy();
+        Chart.getChart("metabolismoEdadChart")?.destroy();
+
+        const labels = historicalData.map(d => `Día ${d.day}`);
+        
+        const chartConfigBase = {
+            type: 'line',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Días de Progreso', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } },
+                    y: { title: { display: true, text: 'Valor', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } }
+                },
+                plugins: {
+                    legend: { labels: { color: 'var(--color-text)' } },
+                    tooltip: { 
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) { label += context.parsed.y.toFixed(1); } 
+                                return label;
+                            }
+                        },
+                        backgroundColor: 'rgba(0,0,0,0.7)', titleColor: 'var(--color-accent-pos)', bodyColor: 'var(--color-text)'
+                    }
+                },
+                elements: { line: { tension: 0.4, borderWidth: 3 }, point: { radius: 5, hoverRadius: 7 } }
             }
-            // La API de visualización de Google devuelve texto que debe ser limpiado
-            const rawText = await response.text();
-            
-            // Limpiar el wrapper de la respuesta (quitando google.visualization.Query.setResponse(
+        };
+
+        new Chart(document.getElementById('pesoChart'), {
+            ...chartConfigBase,
+            data: { labels: labels, datasets: [{ label: 'Peso Total (Kg)', data: historicalData.map(d => d.peso), borderColor: 'var(--color-progress)', backgroundColor: 'rgba(160, 174, 192, 0.2)', fill: true, }] }
+        });
+
+        new Chart(document.getElementById('grasaVisceralChart'), {
+            ...chartConfigBase,
+            data: { labels: labels, datasets: [{ label: 'Grasa Visceral (Nivel)', data: historicalData.map(d => d.grasaVisceral), borderColor: 'var(--color-accent-neg)', backgroundColor: 'rgba(255, 128, 66, 0.2)', fill: true, }] }
+        });
+
+        new Chart(document.getElementById('musculoGrasaChart'), {
+            ...chartConfigBase,
+            data: { labels: labels, datasets: [
+                    { label: 'Músculo Esquelético (%)', data: historicalData.map(d => d.musculoEsqueletico), borderColor: 'var(--color-accent-pos)', backgroundColor: 'rgba(0, 196, 159, 0.1)', fill: false, pointBackgroundColor: 'var(--color-accent-pos)' },
+                    { label: 'Grasa Corporal (%)', data: historicalData.map(d => d.grasaCorporal), borderColor: 'var(--color-accent-neg)', backgroundColor: 'rgba(255, 128, 66, 0.1)', fill: false, pointBackgroundColor: 'var(--color-accent-neg)' }
+                ]
+            }
+        });
+
+        new Chart(document.getElementById('metabolismoEdadChart'), {
+            ...chartConfigBase,
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Metabolismo Basal (Kcal)', data: historicalData.map(d => d.mb), borderColor: 'var(--color-progress)', backgroundColor: 'rgba(160, 174, 192, 0.1)', fill: false, yAxisID: 'yMb' },
+                    { label: 'Edad Corporal (Años)', data: historicalData.map(d => d.edadCorporal), borderColor: 'var(--color-accent-pos)', backgroundColor: 'rgba(0, 196, 159, 0.1)', fill: false, yAxisID: 'yEdad' }
+                ]
+            },
+            options: {
+                ...chartConfigBase.options,
+                scales: {
+                    x: chartConfigBase.options.scales.x,
+                    yMb: { type: 'linear', position: 'left', title: { display: true, text: 'Kcal', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } },
+                    yEdad: { type: 'linear', position: 'right', title: { display: true, text: 'Años', color: 'var(--color-text)' }, ticks: { color: 'var(--color-accent-pos)' }, grid: { drawOnChartArea: false } }
+                }
+            }
+        });
+    }
+
+    loadDataAndDrawCharts();
+</script>
+
+</body>
+</html>
