@@ -9,16 +9,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <style>
-        /* BASE MINIMALISTA (Modo Claro/Suave) */
+        /* BASE MINIMALISTA */
         :root {
-            --color-bg: #F9FAFB;            /* Gris Blanco Muy Suave */
-            --color-surface: #FFFFFF;      /* Blanco Puro */
-            --color-text: #1F2937;          /* Gris Oscuro Principal */
-            --color-text-subtle: #6B7280;  /* Gris Suave para subtítulos */
-            --color-accent-blue: #2563EB;  /* Azul de Acento (Más fuerte para visibilidad) */
-            --color-accent-pos: #059669;   /* Verde Oscuro (Progreso Positivo) */
-            --color-accent-neg: #DC2626;   /* Rojo Fuerte (Alerta/Negativo) */
-            --color-divider: #E5E7EB;      /* Divisor Gris Claro */
+            --color-bg: #F9FAFB;
+            --color-surface: #FFFFFF;
+            --color-text: #1F2937;
+            --color-text-subtle: #6B7280;
+            --color-accent-blue: #2563EB;
+            --color-accent-pos: #059669;
+            --color-accent-neg: #DC2626;
+            --color-divider: #E5E7EB;
         }
         body {
             font-family: 'Roboto', sans-serif;
@@ -45,16 +45,19 @@
         .progress-bar { height: 100%; background-color: var(--color-accent-blue); transition: width 0.5s ease-out; }
         .progress-details { display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.9em; color: var(--color-text-subtle); }
         
-        /* 2. LAYOUT PRINCIPAL */
-        .main-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        /* 2. LAYOUT PRINCIPAL: CORRECCIÓN DE PROPORCIONES (3fr 1fr) */
+        .main-layout { 
+            display: grid; 
+            grid-template-columns: 3fr 1fr; /* Más espacio para los gráficos */
+            gap: 30px; 
+        }
         .data-and-charts-area { display: grid; gap: 30px; }
 
-        /* 3. GRÁFICOS Y VARIACIÓN INTEGRADA (Mejorado para contener el canvas) */
+        /* 3. GRÁFICOS */
         .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .chart-card { height: 350px; padding: 20px; position: relative; } /* Altura fija para el contenedor del Canvas */
-        .canvas-wrapper { height: 100%; width: 100%; } /* Nuevo contenedor si es necesario, pero la altura en .chart-card es suficiente */
+        .chart-card { height: 350px; padding: 20px; position: relative; } 
+        .canvas-wrapper { height: 100%; width: 100%; } 
         .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-        .chart-header h4 { font-weight: 600; margin: 0; font-size: 1.1em; }
         .variation-pill { 
             font-size: 0.8em; 
             padding: 4px 8px; 
@@ -62,25 +65,55 @@
             font-weight: 700;
             opacity: 0.9;
         }
-        /* Colores de variación más saturados para legibilidad */
         .var-pos { background-color: var(--color-accent-pos); color: white; }
         .var-neg { background-color: var(--color-accent-neg); color: white; }
         .var-neutral { background-color: var(--color-divider); color: var(--color-text-subtle); }
         
-        /* 4. METRICAS (Bordes de acento) */
+        /* 4. METRICAS */
         .current-data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
         .data-point { text-align: center; padding: 15px; border-left: 3px solid var(--color-accent-blue); }
         .data-point strong { color: var(--color-text); font-weight: 700; display: block; font-size: 2em; }
         
-        /* 5. HITOS (Columna Derecha) */
+        /* 5. SIDEBAR: REDUCCIÓN DE TAMAÑO Y ESPACIO */
+        .sidebar-area { display: grid; gap: 30px; }
+        
+        /* Reducir tarjeta About */
+        .about-card { 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            padding: 15px; /* Reducción de padding */
+            border: 1px solid var(--color-divider); 
+        }
+        .about-image-wrapper { 
+            width: 70px; /* Reducción de imagen */
+            height: 70px; 
+            border-radius: 50%; 
+            border: 2px solid var(--color-accent-blue); 
+            margin: 0 auto 10px auto; 
+            overflow: hidden; 
+        }
+        .about-text h3 { font-size: 1.1em; margin-bottom: 5px; } /* Reducción de heading */
+        .about-text p { font-size: 0.85em; } /* Reducción de texto */
+
+
+        /* 6. HITOS */
         .milestone-group { border-bottom: 1px dashed var(--color-divider); margin-bottom: 15px; padding-bottom: 15px; }
         .milestone-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .milestone-group h4 { margin: 0 0 10px 0; font-size: 1.1em; color: var(--color-accent-blue); }
-        .milestone-list { list-style: none; padding: 0; }
-        .milestone-list li { display: flex; align-items: center; padding: 8px 0; font-size: 0.95em; transition: color 0.3s; }
-        /* Colores más fuertes para la retroalimentación POSITIVA/NEGATIVA */
+        .milestone-group h4 { margin: 0 0 10px 0; font-size: 1em; color: var(--color-accent-blue); }
+        .milestone-list li { display: flex; align-items: center; padding: 6px 0; font-size: 0.85em; }
         .incomplete i { color: var(--color-accent-neg); }
         .complete i { color: var(--color-accent-pos); }
+
+        /* 7. FOOTER: Eliminación de TikTok */
+        .footer {
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid var(--color-divider);
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--color-text-subtle);
+        }
 
         /* Responsive */
         @media (max-width: 900px) {
@@ -172,7 +205,7 @@
                 <div class="about-text">
                     <h3 style="margin-bottom: 5px; text-align: center;">Miguel Siña</h3>
                     <p style="text-align: center; color: var(--color-accent-blue); font-weight: 500;">Estudiante y Atleta en Construcción</p>
-                    <p>Soy Miguel Siña, estudiante de nutrición y atleta en construcción. Mar y Hierro 1K es mi laboratorio personal. Aquí documento mi proceso de recomposición corporal de 1000 días, aplicando la ciencia nutricional y la fisiología del deporte en mi propio cuerpo.</p>
+                    <p>Soy Miguel Siña, estudiante de nutrición y atleta. Mar y Hierro 1K es mi laboratorio personal. Documento mi proceso de recomposición corporal.</p>
                 </div>
             </div>
             
@@ -180,12 +213,12 @@
                 <h3><i class="fas fa-list-check"></i> Hitos de Graduación por Fase</h3>
                 
                 <div class="milestone-group">
-                    <h4>Fase 1: Recomposición y Cimientos (Día 1 a 400)</h4>
+                    <h4>Fase 1: Recomposición (Día 1 a 400)</h4>
                     <ul class="milestone-list">
                         <li class="complete"><i class="fas fa-check-circle"></i> Constancia: 3 Ciclos de 9 días perfectos seguidos.</li>
                         <li id="milestone-peso" class="incomplete"><i class="fas fa-times-circle"></i> Peso: < 92.0 kg (Actual: 100.6 kg)</li>
                         <li id="milestone-gv" class="incomplete"><i class="fas fa-times-circle"></i> Grasa Visceral: Nivel 13 o 14 (Actual: 18)</li>
-                        <li class="incomplete"><i class="fas fa-times-circle"></i> Movilidad: Squat profundo (Goblet) sin dolor ni levantar talones.</li>
+                        <li class="incomplete"><i class="fas fa-times-circle"></i> Movilidad: Squat profundo sin dolor.</li>
                     </ul>
                 </div>
 
@@ -204,7 +237,7 @@
                     <ul class="milestone-list">
                         <li class="incomplete"><i class="fas fa-circle-notch"></i> Peso: ~82 - 85 kg.</li>
                         <li class="incomplete"><i class="fas fa-circle-notch"></i> Grasa Corporal: 15% - 18%.</li>
-                        <li class="incomplete"><i class="fas fa-circle-notch"></i> Skills: 10 Pull-ups estrictas, 5 Pistol Squats, 1 Muscle-Up fluido.</li>
+                        <li class="incomplete"><i class="fas fa-circle-notch"></i> Skills: 10 Pull-ups, 5 Pistol Squats, 1 Muscle-Up.</li>
                     </ul>
                 </div>
             </div>
@@ -217,12 +250,6 @@
 <footer class="footer">
     <div class="container" style="display: block; text-align: center;">
         
-        <div style="margin-bottom: 10px;">
-            <a id="tiktok-link" href="https://www.tiktok.com/@TU_USUARIO_TIKTOK" target="_blank" class="social-link">
-                <i class="fab fa-tiktok fa-2x"></i>
-            </a>
-        </div>
-
         <div class="disclaimer">
             Descargo de responsabilidad: El contenido de este sitio refleja mi experiencia personal y mi investigación como estudiante de nutrición. No sustituye el asesoramiento médico profesional personalizado.
         </div>
@@ -273,15 +300,13 @@
             // Meta: Aumentar el valor. Un 'diff' >= 0 es positivo (var-pos).
             className = diff >= 0 ? 'var-pos' : 'var-neg';
         } else if (variableKey === 'mb') {
-             // Metabolismo Basal (MB): El MB suele bajar con la pérdida de peso (negativo).
-             // La mejoría es MANTENER o SUBIR MB mientras se baja peso/grasa.
-             // Para simplificar, asumiremos que CUALQUIER cambio menor a -50 Kcal es NEGATIVO (alerta).
+            // MB: Un cambio negativo grande (caída metabólica) es alerta.
             if (diff >= 0) {
-                className = 'var-pos'; // Subir o mantener es bueno.
+                className = 'var-pos'; 
             } else if (diff < -50) {
-                 className = 'var-neg'; // Alerta: Caída metabólica significativa.
+                 className = 'var-neg'; 
             } else {
-                 className = 'var-neutral'; // Caída esperada y controlada.
+                 className = 'var-neutral'; 
             }
         }
         
@@ -317,7 +342,7 @@
         ];
         document.querySelectorAll('.current-data-grid strong').forEach((el, i) => { el.textContent = currentDataPoints[i]; });
 
-        // Actualizar Hitos de Graduación (Progressive Disclosure)
+        // Actualizar Hitos de Graduación
         const milestonePeso = document.getElementById('milestone-peso');
         const milestoneGV = document.getElementById('milestone-gv');
 
@@ -382,7 +407,7 @@
             type: 'line',
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Permitir que el contenedor (chart-card) defina las dimensiones
+                maintainAspectRatio: false, 
                 scales: {
                     x: { title: { display: true, text: 'Días de Progreso', color: getColor('--color-text') }, ticks: { color: getColor('--color-text-subtle') }, grid: { color: getColor('--color-divider') } },
                     y: { title: { display: true, text: 'Valor', color: getColor('--color-text') }, ticks: { color: getColor('--color-text-subtle') }, grid: { color: getColor('--color-divider') } }
@@ -408,48 +433,4 @@
         // 1. Peso Total
         new Chart(document.getElementById('pesoChart'), {
             ...chartConfigBase,
-            data: { labels: labels, datasets: [{ label: 'Peso Total (Kg)', data: historicalData.map(d => d.peso), borderColor: getColor('--color-accent-blue'), backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, }] }
-        });
-
-        // 2. Grasa Visceral
-        new Chart(document.getElementById('grasaVisceralChart'), {
-            ...chartConfigBase,
-            data: { labels: labels, datasets: [{ label: 'Grasa Visceral (Nivel)', data: historicalData.map(d => d.grasaVisceral), borderColor: getColor('--color-accent-neg'), backgroundColor: 'rgba(220, 38, 38, 0.1)', fill: true, }] }
-        });
-
-        // 3. Músculo Esquelético vs. Grasa Corporal
-        new Chart(document.getElementById('musculoGrasaChart'), {
-            ...chartConfigBase,
-            data: { labels: labels, datasets: [
-                    { label: 'Músculo Esquelético (%)', data: historicalData.map(d => d.musculoEsqueletico), borderColor: getColor('--color-accent-pos'), backgroundColor: 'rgba(5, 150, 105, 0.1)', fill: false, pointBackgroundColor: getColor('--color-accent-pos') },
-                    { label: 'Grasa Corporal (%)', data: historicalData.map(d => d.grasaCorporal), borderColor: getColor('--color-accent-neg'), backgroundColor: 'rgba(220, 38, 38, 0.1)', fill: false, pointBackgroundColor: getColor('--color-accent-neg') }
-                ]
-            }
-        });
-
-        // 4. Metabolismo Basal vs. Edad Corporal (Doble Eje Y)
-        new Chart(document.getElementById('metabolismoEdadChart'), {
-            ...chartConfigBase,
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'Metabolismo Basal (Kcal)', data: historicalData.map(d => d.mb), borderColor: getColor('--color-text-subtle'), backgroundColor: 'rgba(107, 114, 128, 0.1)', fill: false, yAxisID: 'yMb' },
-                    { label: 'Edad Corporal (Años)', data: historicalData.map(d => d.edadCorporal), borderColor: getColor('--color-accent-blue'), backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: false, yAxisID: 'yEdad' }
-                ]
-            },
-            options: {
-                ...chartConfigBase.options,
-                scales: {
-                    x: chartConfigBase.options.scales.x,
-                    yMb: { type: 'linear', position: 'left', title: { display: true, text: 'Kcal', color: getColor('--color-text') }, ticks: { color: getColor('--color-text-subtle') }, grid: { color: getColor('--color-divider') } },
-                    yEdad: { type: 'linear', position: 'right', title: { display: true, text: 'Edad (Años)', color: getColor('--color-accent-blue') }, ticks: { color: getColor('--color-accent-blue') }, grid: { drawOnChartArea: false } }
-                }
-            }
-        });
-    }
-
-    loadDataAndDrawCharts();
-</script>
-
-</body>
-</html>
+            data: { labels: labels, datasets: [{ label: 'Peso Total (Kg)', data: historicalData.map(d => d.peso), borderColor: getColor('--color-accent-blue'), backgroundColor: 'rgba(37, 99, 235, 0.1)', fill:
