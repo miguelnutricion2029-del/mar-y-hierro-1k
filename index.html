@@ -36,7 +36,7 @@
         }
         h1 { font-weight: 700; font-size: 2.5em; margin-bottom: 5px; }
         h2 { color: var(--color-text-subtle); font-weight: 400; font-size: 1.1em; margin-top: 0; }
-        h3 { font-weight: 600; font-size: 1.3em; color: var(--color-text); }
+        h3 { font-weight: 600; font-size: 1.3em; color: var(--color-text); margin-bottom: 15px; }
         .card { background-color: var(--color-surface); padding: 25px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
 
         /* 1. SECCIÓN DE PROGRESO SUPERIOR */
@@ -57,16 +57,27 @@
         .about-text { font-size: 0.9em; text-align: left; }
         .about-text strong { color: var(--color-text); font-weight: 600; }
         
-        /* 4. GRÁFICOS */
+        /* 4. GRÁFICOS Y VARIACIÓN INTEGRADA */
         .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .chart-card { min-height: 300px; padding: 20px; }
+        .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+        .chart-header h4 { font-weight: 600; margin: 0; font-size: 1.1em; }
+        .variation-pill { 
+            font-size: 0.8em; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-weight: 700;
+        }
+        .var-pos { background-color: var(--color-accent-pos); color: var(--color-text); }
+        .var-neg { background-color: var(--color-accent-neg); color: var(--color-text); }
+        .var-neutral { background-color: var(--color-divider); color: var(--color-text-subtle); }
         
         /* 5. METRICAS */
         .current-data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
         .data-point { text-align: center; padding: 15px; border-left: 3px solid var(--color-accent-blue); }
         .data-point strong { color: var(--color-text); font-weight: 700; display: block; font-size: 2em; }
         
-        /* 6. HITOS DE GRADUACIÓN (Formato Columna Derecha) */
+        /* 6. HITOS DE GRADUACIÓN (Sidebar) */
         .milestone-group { border-bottom: 1px dashed var(--color-divider); margin-bottom: 15px; padding-bottom: 15px; }
         .milestone-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .milestone-group h4 { margin: 0 0 10px 0; font-size: 1.1em; color: var(--color-accent-blue); }
@@ -128,40 +139,42 @@
                     <div class="data-point"><span>Metabolismo Basal</span> <strong>--</strong> Kcal</div>
                     <div class="data-point"><span>IMC</span> <strong>--</strong></div>
                 </div>
-                
-                <div class="button-group">
-                    <button class="btn-toggle" onclick="document.getElementById('tech-data').style.display = document.getElementById('tech-data').style.display === 'block' ? 'none' : 'block';">
-                        <i class="fas fa-microscope"></i> Ver Detalles Técnicos
-                    </button>
-                    <button class="btn-toggle" style="background-color: var(--color-accent-blue);" onclick="alert('INSTRUCCIONES DE ACTUALIZACIÓN:\n\n1. Ve a tu archivo index.html en GitHub.\n2. Busca // ZONA DE EDICIÓN DE DATOS (al final del código).\n3. Añade la nueva línea de datos con tu último control.\n4. ¡Guarda y confirma los cambios (Commit)!');">
-                        <i class="fas fa-upload"></i> ¿Cómo Actualizo los Datos?
-                    </button>
-                </div>
-
-                <div id="tech-data" class="disclosure-content">
-                    <h4>Variación de Indicadores (Día Anterior vs. Último Día)</h4>
-                    <table id="variation-table">
-                        <thead>
-                            <tr>
-                                <th>Biomarcador</th>
-                                <th>Día Anterior</th>
-                                <th>Día Actual</th>
-                                <th>Variación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
             <section class="card">
                 <h3><i class="fas fa-chart-area"></i> Evolución y Tendencia</h3>
                 <div class="chart-grid">
-                    <div class="chart-card"><canvas id="pesoChart"></canvas></div>
-                    <div class="chart-card"><canvas id="grasaVisceralChart"></canvas></div>
-                    <div class="chart-card"><canvas id="musculoGrasaChart"></canvas></div>
-                    <div class="chart-card"><canvas id="metabolismoEdadChart"></canvas></div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4>Peso Total (Kg)</h4>
+                            <span id="var-peso" class="variation-pill var-neutral">Cargando...</span>
+                        </div>
+                        <canvas id="pesoChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4>Grasa Visceral (Nivel)</h4>
+                            <span id="var-grasaVisceral" class="variation-pill var-neutral">Cargando...</span>
+                        </div>
+                        <canvas id="grasaVisceralChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4>Músculo Esquelético (%)</h4>
+                            <span id="var-musculoEsqueletico" class="variation-pill var-neutral">Cargando...</span>
+                        </div>
+                        <canvas id="musculoGrasaChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4>Metabolismo Basal (Kcal)</h4>
+                            <span id="var-mb" class="variation-pill var-neutral">Cargando...</span>
+                        </div>
+                        <canvas id="metabolismoEdadChart"></canvas>
+                    </div>
                 </div>
             </section>
         </section>
@@ -186,8 +199,8 @@
                     <h4>Fase 1: Recomposición y Cimientos (Día 1 a 400)</h4>
                     <ul class="milestone-list">
                         <li class="complete"><i class="fas fa-check-circle"></i> Constancia: 3 Ciclos de 9 días perfectos seguidos.</li>
-                        <li class="incomplete"><i class="fas fa-times-circle"></i> Peso: < 92.0 kg (Actual: 100.6 kg)</li>
-                        <li class="incomplete"><i class="fas fa-times-circle"></i> Grasa Visceral: Nivel 13 o 14 (Actual: 18)</li>
+                        <li id="milestone-peso" class="incomplete"><i class="fas fa-times-circle"></i> Peso: < 92.0 kg (Actual: 100.6 kg)</li>
+                        <li id="milestone-gv" class="incomplete"><i class="fas fa-times-circle"></i> Grasa Visceral: Nivel 13 o 14 (Actual: 18)</li>
                         <li class="incomplete"><i class="fas fa-times-circle"></i> Movilidad: Squat profundo (Goblet) sin dolor ni levantar talones.</li>
                     </ul>
                 </div>
@@ -222,13 +235,13 @@
     <div class="container" style="display: block; text-align: center;">
         
         <div style="margin-bottom: 10px;">
-            <a href="https://www.tiktok.com/@TU_USUARIO_TIKTOK" target="_blank" class="social-link">
+            <a id="tiktok-link" href="https://www.tiktok.com/@TU_USUARIO_TIKTOK" target="_blank" class="social-link">
                 <i class="fab fa-tiktok fa-2x"></i>
             </a>
         </div>
 
-        <p style="font-size: 0.9em; margin-bottom: 15px;">
-            Para ver tu video de TikTok, edita el archivo index.html y sustituye <strong>TU_USUARIO_TIKTOK</strong> en el enlace del pie de página por el nombre de tu cuenta.
+        <p style="font-size: 0.9em; margin-bottom: 15px; color: var(--color-accent-blue);">
+            Para actualizar tu TikTok, haz clic en el botón "¿Cómo Actualizo los Datos?" y sustituye TU_USUARIO_TIKTOK por tu nombre de cuenta.
         </p>
 
         <div class="disclaimer">
@@ -265,20 +278,31 @@
         imc: 'IMC (Body Mass Index)',
         mb: 'Metabolismo Basal (Kcal)'
     };
+
+    // Función para obtener valores de CSS en Chart.js
+    const getColor = (prop) => getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
     
-    function formatVariation(current, previous, variableKey) {
+    function calculateVariation(current, previous, variableKey) {
+        if (!previous) return { diff: 0, text: 'N/A', class: 'var-neutral' };
+
         const diff = current - previous;
-        let color = '';
-        
-        if (variableKey === 'peso' || variableKey === 'grasaVisceral' || variableKey === 'grasaCorporal' || variableKey === 'imc') {
-            color = diff <= 0 ? 'var(--color-accent-pos)' : 'var(--color-accent-neg)';
-        } else if (variableKey === 'musculoEsqueletico') {
-            color = diff >= 0 ? 'var(--color-accent-pos)' : 'var(--color-accent-neg)';
-        } else {
-            color = diff <= 0 ? 'var(--color-accent-pos)' : 'var(--color-text-subtle)';
+        const diffText = (diff > 0 ? '+' : '') + diff.toFixed(1);
+        let className = 'var-neutral';
+
+        // Reglas de color para el diseño BioVis
+        if (variableKey === 'peso' || variableKey === 'grasaVisceral' || variableKey === 'grasaCorporal' || variableKey === 'imc' || variableKey === 'mb') {
+            // Se busca un valor menor (pérdida/optimización) -> Negativo es positivo
+            className = diff <= 0 ? 'var-pos' : 'var-neg';
+        } else if (variableKey === 'musculoEsqueletico' || variableKey === 'edadCorporal') {
+            // Se busca un valor mayor (ganancia muscular) o menor (edad corporal)
+            if (variableKey === 'edadCorporal') {
+                 className = diff <= 0 ? 'var-pos' : 'var-neg';
+            } else {
+                className = diff >= 0 ? 'var-pos' : 'var-neg';
+            }
         }
         
-        return `<td style="color: ${color};">${diff > 0 ? '+' : ''}${diff.toFixed(1)}</td>`;
+        return { diff: diff, text: diffText, class: className };
     }
 
     async function loadDataAndDrawCharts() {
@@ -290,7 +314,8 @@
             return;
         }
         
-        // Actualizar Cabecera de Progreso
+        // --- Actualización de Componentes de Texto y Progreso ---
+        
         const totalDays = 1000;
         const currentDay = latestData.day;
         const progressPercent = (currentDay / totalDays) * 100;
@@ -306,23 +331,33 @@
         document.querySelectorAll('.current-data-grid strong').forEach((el, i) => { el.textContent = currentDataPoints[i]; });
 
         // Actualizar Hitos (Los valores deben coincidir con los datos cargados)
-        document.querySelector('.milestone-list li:nth-child(2)').lastChild.textContent = ` Peso: < 92.0 kg (Actual: ${latestData.peso.toFixed(1)} kg)`;
-        document.querySelector('.milestone-list li:nth-child(3)').lastChild.textContent = ` Grasa Visceral: Nivel 13 o 14 (Actual: ${latestData.grasaVisceral})`;
+        const milestonePeso = document.getElementById('milestone-peso');
+        const milestoneGV = document.getElementById('milestone-gv');
+
+        milestonePeso.lastChild.textContent = ` Peso: < 92.0 kg (Actual: ${latestData.peso.toFixed(1)} kg)`;
+        milestoneGV.lastChild.textContent = ` Grasa Visceral: Nivel 13 o 14 (Actual: ${latestData.grasaVisceral})`;
         
-        // Tabla de Variación
-        if (previousData) {
-            const tableBody = document.querySelector('#variation-table tbody');
-            tableBody.innerHTML = '';
-            Object.keys(variableNames).forEach(key => {
-                const row = tableBody.insertRow();
-                row.innerHTML = `
-                    <td>${variableNames[key]}</td>
-                    <td>${previousData[key].toFixed(1)}</td>
-                    <td>${latestData[key].toFixed(1)}</td>
-                    ${formatVariation(latestData[key], previousData[key], key)}
-                `;
-            });
-        }
+        // --- Integración de Variación en los Gráficos ---
+
+        const chartVariations = {
+            peso: calculateVariation(latestData.peso, previousData?.peso, 'peso'),
+            grasaVisceral: calculateVariation(latestData.grasaVisceral, previousData?.grasaVisceral, 'grasaVisceral'),
+            musculoEsqueletico: calculateVariation(latestData.musculoEsqueletico, previousData?.musculoEsqueletico, 'musculoEsqueletico'),
+            mb: calculateVariation(latestData.mb, previousData?.mb, 'mb')
+        };
+        
+        document.getElementById('var-peso').textContent = chartVariations.peso.text;
+        document.getElementById('var-peso').className = `variation-pill ${chartVariations.peso.class}`;
+        
+        document.getElementById('var-grasaVisceral').textContent = chartVariations.grasaVisceral.text;
+        document.getElementById('var-grasaVisceral').className = `variation-pill ${chartVariations.grasaVisceral.class}`;
+
+        document.getElementById('var-musculoEsqueletico').textContent = chartVariations.musculoEsqueletico.text;
+        document.getElementById('var-musculoEsqueletico').className = `variation-pill ${chartVariations.musculoEsqueletico.class}`;
+        
+        document.getElementById('var-mb').textContent = chartVariations.mb.text;
+        document.getElementById('var-mb').className = `variation-pill ${chartVariations.mb.class}`;
+
 
         drawCharts(historicalData);
     }
@@ -362,7 +397,6 @@
             }
         };
         
-        // Función para obtener valores de CSS en Chart.js
         const getColor = (prop) => getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
 
         new Chart(document.getElementById('pesoChart'), {
