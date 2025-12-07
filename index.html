@@ -11,13 +11,13 @@
     <style>
         /* BASE MINIMALISTA (Modo Claro/Suave) */
         :root {
-            --color-bg: #F9FAFB;           /* Gris Blanco Muy Suave */
+            --color-bg: #F9FAFB;            /* Gris Blanco Muy Suave */
             --color-surface: #FFFFFF;      /* Blanco Puro */
-            --color-text: #1F2937;         /* Gris Oscuro Principal */
+            --color-text: #1F2937;          /* Gris Oscuro Principal */
             --color-text-subtle: #6B7280;  /* Gris Suave para subtítulos */
-            --color-accent-blue: #93C5FD;  /* Azul Pastel Suave (Bordes y Acento) */
-            --color-accent-pos: #6EE7B7;   /* Verde Menta Suave (Progreso Bueno) */
-            --color-accent-neg: #FCA5A5;   /* Rojo Salmón Suave (Alerta) */
+            --color-accent-blue: #2563EB;  /* Azul de Acento (Más fuerte para visibilidad) */
+            --color-accent-pos: #059669;   /* Verde Oscuro (Progreso Positivo) */
+            --color-accent-neg: #DC2626;   /* Rojo Fuerte (Alerta/Negativo) */
             --color-divider: #E5E7EB;      /* Divisor Gris Claro */
         }
         body {
@@ -40,26 +40,19 @@
         .card { background-color: var(--color-surface); padding: 25px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
 
         /* 1. SECCIÓN DE PROGRESO SUPERIOR */
-        .progress-header { text-align: left; padding: 10px 0 20px 0; margin-bottom: 20px; }
+        .progress-header { text-align: left; padding: 25px; margin-bottom: 20px; }
         .progress-bar-wrapper { width: 100%; height: 8px; background-color: var(--color-divider); border-radius: 4px; overflow: hidden; margin-top: 15px; }
         .progress-bar { height: 100%; background-color: var(--color-accent-blue); transition: width 0.5s ease-out; }
         .progress-details { display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.9em; color: var(--color-text-subtle); }
         
-        /* 2. LAYOUT PRINCIPAL (Datos, Gráficos y Hitos) */
+        /* 2. LAYOUT PRINCIPAL */
         .main-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
         .data-and-charts-area { display: grid; gap: 30px; }
 
-        /* 3. SECCIÓN SOBRE MÍ (Columna Derecha, Estilo vertical) */
-        .sidebar-area { display: grid; gap: 30px; }
-        .about-card { text-align: center; display: flex; flex-direction: column; padding: 30px 15px; border: 1px solid var(--color-divider); }
-        .about-image-wrapper { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--color-accent-blue); margin: 0 auto 15px auto; overflow: hidden; }
-        .about-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .about-text { font-size: 0.9em; text-align: left; }
-        .about-text strong { color: var(--color-text); font-weight: 600; }
-        
-        /* 4. GRÁFICOS Y VARIACIÓN INTEGRADA */
+        /* 3. GRÁFICOS Y VARIACIÓN INTEGRADA (Mejorado para contener el canvas) */
         .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .chart-card { min-height: 300px; padding: 20px; }
+        .chart-card { height: 350px; padding: 20px; position: relative; } /* Altura fija para el contenedor del Canvas */
+        .canvas-wrapper { height: 100%; width: 100%; } /* Nuevo contenedor si es necesario, pero la altura en .chart-card es suficiente */
         .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
         .chart-header h4 { font-weight: 600; margin: 0; font-size: 1.1em; }
         .variation-pill { 
@@ -67,43 +60,33 @@
             padding: 4px 8px; 
             border-radius: 12px; 
             font-weight: 700;
+            opacity: 0.9;
         }
-        .var-pos { background-color: var(--color-accent-pos); color: var(--color-text); }
-        .var-neg { background-color: var(--color-accent-neg); color: var(--color-text); }
+        /* Colores de variación más saturados para legibilidad */
+        .var-pos { background-color: var(--color-accent-pos); color: white; }
+        .var-neg { background-color: var(--color-accent-neg); color: white; }
         .var-neutral { background-color: var(--color-divider); color: var(--color-text-subtle); }
         
-        /* 5. METRICAS */
+        /* 4. METRICAS (Bordes de acento) */
         .current-data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
         .data-point { text-align: center; padding: 15px; border-left: 3px solid var(--color-accent-blue); }
         .data-point strong { color: var(--color-text); font-weight: 700; display: block; font-size: 2em; }
         
-        /* 6. HITOS DE GRADUACIÓN (Sidebar) */
+        /* 5. HITOS (Columna Derecha) */
         .milestone-group { border-bottom: 1px dashed var(--color-divider); margin-bottom: 15px; padding-bottom: 15px; }
         .milestone-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .milestone-group h4 { margin: 0 0 10px 0; font-size: 1.1em; color: var(--color-accent-blue); }
-        .milestone-group li { padding: 8px 0; font-size: 0.95em; }
         .milestone-list { list-style: none; padding: 0; }
-        .milestone-list li { display: flex; align-items: center; }
-        .milestone-list i { margin-right: 10px; }
+        .milestone-list li { display: flex; align-items: center; padding: 8px 0; font-size: 0.95em; transition: color 0.3s; }
+        /* Colores más fuertes para la retroalimentación POSITIVA/NEGATIVA */
         .incomplete i { color: var(--color-accent-neg); }
         .complete i { color: var(--color-accent-pos); }
-        
-        /* 7. FOOTER */
-        .footer {
-            margin-top: 40px;
-            padding: 20px 0;
-            border-top: 1px solid var(--color-divider);
-            text-align: center;
-            font-size: 0.8em;
-            color: var(--color-text-subtle);
-        }
-        .social-link { color: var(--color-text-subtle); margin: 0 10px; transition: color 0.3s; }
-        .social-link:hover { color: var(--color-accent-blue); }
 
         /* Responsive */
         @media (max-width: 900px) {
             .main-layout { grid-template-columns: 1fr; }
             .sidebar-area { grid-auto-flow: row; }
+            .chart-card { height: 300px; }
         }
     </style>
 </head>
@@ -113,7 +96,7 @@
 
     <header class="progress-header card">
         <h1>Mar y Hierro 1K</h1>
-        <h2>Bio-Rendimiento y Estrategia Nutricional</h2>
+        <h2>Bio-Rendimiento y Estrategia Nutricional Personal (Día <span id="current-day">--</span>)</h2>
         
         <div class="progress-bar-wrapper">
             <div id="progress-bar-fill" class="progress-bar"></div>
@@ -129,7 +112,7 @@
         <section class="data-and-charts-area">
             
             <div class="card">
-                <h3><i class="fas fa-chart-line"></i> Métricas Actuales</h3>
+                <h3><i class="fas fa-bullseye"></i> Datos Biométricos Recientes</h3>
                 <div class="current-data-grid">
                     <div class="data-point"><span>Peso Total</span> <strong>--</strong> Kg</div>
                     <div class="data-point"><span>Grasa Visceral</span> <strong>--</strong> Nivel</div>
@@ -144,12 +127,13 @@
             <section class="card">
                 <h3><i class="fas fa-chart-area"></i> Evolución y Tendencia</h3>
                 <div class="chart-grid">
+                    
                     <div class="chart-card">
                         <div class="chart-header">
                             <h4>Peso Total (Kg)</h4>
                             <span id="var-peso" class="variation-pill var-neutral">Cargando...</span>
                         </div>
-                        <canvas id="pesoChart"></canvas>
+                        <div class="canvas-wrapper"><canvas id="pesoChart"></canvas></div>
                     </div>
                     
                     <div class="chart-card">
@@ -157,23 +141,23 @@
                             <h4>Grasa Visceral (Nivel)</h4>
                             <span id="var-grasaVisceral" class="variation-pill var-neutral">Cargando...</span>
                         </div>
-                        <canvas id="grasaVisceralChart"></canvas>
+                        <div class="canvas-wrapper"><canvas id="grasaVisceralChart"></canvas></div>
                     </div>
                     
                     <div class="chart-card">
                         <div class="chart-header">
-                            <h4>Músculo Esquelético (%)</h4>
+                            <h4>Músculo/Grasa (%)</h4>
                             <span id="var-musculoEsqueletico" class="variation-pill var-neutral">Cargando...</span>
                         </div>
-                        <canvas id="musculoGrasaChart"></canvas>
+                        <div class="canvas-wrapper"><canvas id="musculoGrasaChart"></canvas></div>
                     </div>
                     
                     <div class="chart-card">
                         <div class="chart-header">
-                            <h4>Metabolismo Basal (Kcal)</h4>
+                            <h4>Metabolismo/Edad</h4>
                             <span id="var-mb" class="variation-pill var-neutral">Cargando...</span>
                         </div>
-                        <canvas id="metabolismoEdadChart"></canvas>
+                        <div class="canvas-wrapper"><canvas id="metabolismoEdadChart"></canvas></div>
                     </div>
                 </div>
             </section>
@@ -224,7 +208,6 @@
                     </ul>
                 </div>
             </div>
-            
         </section>
 
     </div>
@@ -239,10 +222,6 @@
                 <i class="fab fa-tiktok fa-2x"></i>
             </a>
         </div>
-
-        <p style="font-size: 0.9em; margin-bottom: 15px; color: var(--color-accent-blue);">
-            Para actualizar tu TikTok, haz clic en el botón "¿Cómo Actualizo los Datos?" y sustituye TU_USUARIO_TIKTOK por tu nombre de cuenta.
-        </p>
 
         <div class="disclaimer">
             Descargo de responsabilidad: El contenido de este sitio refleja mi experiencia personal y mi investigación como estudiante de nutrición. No sustituye el asesoramiento médico profesional personalizado.
@@ -264,24 +243,21 @@
         { day: 157, date: '05/12/2025', peso: 100.6, grasaVisceral: 18, musculoEsqueletico: 29.7, grasaCorporal: 35.1, edadCorporal: 70, imc: 33.6, mb: 1990 } 
         // A PARTIR DE AQUÍ DEBES AGREGAR TUS NUEVOS PUNTOS DE DATOS (Día 168, 177, etc.)
     ];
+
+    const milestones = {
+        peso: 92.0, // Meta: Peso Total < 92.0 kg
+        grasaVisceral: 14 // Meta: Grasa Visceral <= 14
+    };
     // *******************************************************************
     // FIN ZONA DE EDICIÓN DE DATOS
     // *******************************************************************
     
-    
-    const variableNames = {
-        peso: 'Peso Total (Kg)',
-        grasaVisceral: 'Grasa Visceral (Nivel)',
-        musculoEsqueletico: 'Músculo Esquelético (%)',
-        grasaCorporal: 'Grasa Corporal (%)',
-        edadCorporal: 'Edad Corporal (Años)',
-        imc: 'IMC (Body Mass Index)',
-        mb: 'Metabolismo Basal (Kcal)'
-    };
-
     // Función para obtener valores de CSS en Chart.js
     const getColor = (prop) => getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
     
+    /**
+     * Calcula la variación y asigna la clase de color basada en la meta de optimización.
+     */
     function calculateVariation(current, previous, variableKey) {
         if (!previous) return { diff: 0, text: 'N/A', class: 'var-neutral' };
 
@@ -289,28 +265,38 @@
         const diffText = (diff > 0 ? '+' : '') + diff.toFixed(1);
         let className = 'var-neutral';
 
-        // Reglas de color para el diseño BioVis
-        if (variableKey === 'peso' || variableKey === 'grasaVisceral' || variableKey === 'grasaCorporal' || variableKey === 'imc' || variableKey === 'mb') {
-            // Se busca un valor menor (pérdida/optimización) -> Negativo es positivo
+        // Reglas BioVis: Positivo (var-pos) = Mejoría en el rendimiento/salud.
+        if (['peso', 'grasaVisceral', 'grasaCorporal', 'imc', 'edadCorporal'].includes(variableKey)) {
+            // Meta: Disminuir el valor. Un 'diff' <= 0 es positivo (var-pos).
             className = diff <= 0 ? 'var-pos' : 'var-neg';
-        } else if (variableKey === 'musculoEsqueletico' || variableKey === 'edadCorporal') {
-            // Se busca un valor mayor (ganancia muscular) o menor (edad corporal)
-            if (variableKey === 'edadCorporal') {
-                 className = diff <= 0 ? 'var-pos' : 'var-neg';
+        } else if (variableKey === 'musculoEsqueletico') {
+            // Meta: Aumentar el valor. Un 'diff' >= 0 es positivo (var-pos).
+            className = diff >= 0 ? 'var-pos' : 'var-neg';
+        } else if (variableKey === 'mb') {
+             // Metabolismo Basal (MB): El MB suele bajar con la pérdida de peso (negativo).
+             // La mejoría es MANTENER o SUBIR MB mientras se baja peso/grasa.
+             // Para simplificar, asumiremos que CUALQUIER cambio menor a -50 Kcal es NEGATIVO (alerta).
+            if (diff >= 0) {
+                className = 'var-pos'; // Subir o mantener es bueno.
+            } else if (diff < -50) {
+                 className = 'var-neg'; // Alerta: Caída metabólica significativa.
             } else {
-                className = diff >= 0 ? 'var-pos' : 'var-neg';
+                 className = 'var-neutral'; // Caída esperada y controlada.
             }
         }
         
         return { diff: diff, text: diffText, class: className };
     }
 
+    /**
+     * Actualiza todos los elementos de la interfaz de usuario: métricas, barra de progreso y hitos.
+     */
     async function loadDataAndDrawCharts() {
         const latestData = historicalData[historicalData.length - 1];
         const previousData = historicalData.length > 1 ? historicalData[historicalData.length - 2] : null;
         
-        if (historicalData.length === 0) {
-            document.querySelector('.header h3').innerHTML = '⚠️ ERROR: No hay datos en el código.';
+        if (!latestData) {
+            document.querySelector('h2').textContent = '⚠️ ERROR: No hay datos cargados.';
             return;
         }
         
@@ -320,23 +306,41 @@
         const currentDay = latestData.day;
         const progressPercent = (currentDay / totalDays) * 100;
         
+        document.getElementById('current-day').textContent = currentDay;
         document.getElementById('current-day-info').innerHTML = `Día ${currentDay} / ${totalDays} (${latestData.date})`;
         document.getElementById('progress-bar-fill').style.width = `${progressPercent}%`;
 
-        // Actualizar Métricas Actuales
+        // Actualizar Métricas Actuales (en el orden: peso, grasaVisceral, grasaCorporal, musculoEsqueletico, edadCorporal, mb, imc)
         const currentDataPoints = [
             latestData.peso.toFixed(1), latestData.grasaVisceral, latestData.grasaCorporal.toFixed(1), 
             latestData.musculoEsqueletico.toFixed(1), latestData.edadCorporal, latestData.mb, latestData.imc.toFixed(1)
         ];
         document.querySelectorAll('.current-data-grid strong').forEach((el, i) => { el.textContent = currentDataPoints[i]; });
 
-        // Actualizar Hitos (Los valores deben coincidir con los datos cargados)
+        // Actualizar Hitos de Graduación (Progressive Disclosure)
         const milestonePeso = document.getElementById('milestone-peso');
         const milestoneGV = document.getElementById('milestone-gv');
 
-        milestonePeso.lastChild.textContent = ` Peso: < 92.0 kg (Actual: ${latestData.peso.toFixed(1)} kg)`;
-        milestoneGV.lastChild.textContent = ` Grasa Visceral: Nivel 13 o 14 (Actual: ${latestData.grasaVisceral})`;
-        
+        // Peso
+        milestonePeso.lastChild.textContent = ` Peso: < ${milestones.peso.toFixed(1)} kg (Actual: ${latestData.peso.toFixed(1)} kg)`;
+        if (latestData.peso < milestones.peso) {
+             milestonePeso.className = 'complete';
+             milestonePeso.querySelector('i').className = 'fas fa-check-circle';
+        } else {
+             milestonePeso.className = 'incomplete';
+             milestonePeso.querySelector('i').className = 'fas fa-times-circle';
+        }
+
+        // Grasa Visceral
+        milestoneGV.lastChild.textContent = ` Grasa Visceral: Nivel <= ${milestones.grasaVisceral} (Actual: ${latestData.grasaVisceral})`;
+        if (latestData.grasaVisceral <= milestones.grasaVisceral) {
+             milestoneGV.className = 'complete';
+             milestoneGV.querySelector('i').className = 'fas fa-check-circle';
+        } else {
+             milestoneGV.className = 'incomplete';
+             milestoneGV.querySelector('i').className = 'fas fa-times-circle';
+        }
+
         // --- Integración de Variación en los Gráficos ---
 
         const chartVariations = {
@@ -346,23 +350,27 @@
             mb: calculateVariation(latestData.mb, previousData?.mb, 'mb')
         };
         
-        document.getElementById('var-peso').textContent = chartVariations.peso.text;
+        document.getElementById('var-peso').textContent = chartVariations.peso.text + ' kg';
         document.getElementById('var-peso').className = `variation-pill ${chartVariations.peso.class}`;
         
-        document.getElementById('var-grasaVisceral').textContent = chartVariations.grasaVisceral.text;
+        document.getElementById('var-grasaVisceral').textContent = chartVariations.grasaVisceral.text + ' Nvl';
         document.getElementById('var-grasaVisceral').className = `variation-pill ${chartVariations.grasaVisceral.class}`;
 
-        document.getElementById('var-musculoEsqueletico').textContent = chartVariations.musculoEsqueletico.text;
+        document.getElementById('var-musculoEsqueletico').textContent = chartVariations.musculoEsqueletico.text + ' %';
         document.getElementById('var-musculoEsqueletico').className = `variation-pill ${chartVariations.musculoEsqueletico.class}`;
         
-        document.getElementById('var-mb').textContent = chartVariations.mb.text;
+        document.getElementById('var-mb').textContent = chartVariations.mb.text + ' Kcal';
         document.getElementById('var-mb').className = `variation-pill ${chartVariations.mb.class}`;
 
 
         drawCharts(historicalData);
     }
 
+    /**
+     * Dibuja los gráficos usando Chart.js
+     */
     function drawCharts(historicalData) {
+        // Destruir gráficos anteriores para evitar errores de redibujado (IMPORTANTE)
         Chart.getChart("pesoChart")?.destroy();
         Chart.getChart("grasaVisceralChart")?.destroy();
         Chart.getChart("musculoGrasaChart")?.destroy();
@@ -374,7 +382,7 @@
             type: 'line',
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: false, // Permitir que el contenedor (chart-card) defina las dimensiones
                 scales: {
                     x: { title: { display: true, text: 'Días de Progreso', color: getColor('--color-text') }, ticks: { color: getColor('--color-text-subtle') }, grid: { color: getColor('--color-divider') } },
                     y: { title: { display: true, text: 'Valor', color: getColor('--color-text') }, ticks: { color: getColor('--color-text-subtle') }, grid: { color: getColor('--color-divider') } }
@@ -390,41 +398,43 @@
                                 return label;
                             }
                         },
-                        backgroundColor: 'rgba(0,0,0,0.7)', titleColor: getColor('--color-accent-blue'), bodyColor: 'white'
+                        backgroundColor: 'rgba(0,0,0,0.8)', titleColor: getColor('--color-accent-blue'), bodyColor: 'white'
                     }
                 },
-                elements: { line: { tension: 0.4, borderWidth: 3 }, point: { radius: 5, hoverRadius: 7 } }
+                elements: { line: { tension: 0.3, borderWidth: 3 }, point: { radius: 4, hoverRadius: 6 } }
             }
         };
         
-        const getColor = (prop) => getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
-
+        // 1. Peso Total
         new Chart(document.getElementById('pesoChart'), {
             ...chartConfigBase,
-            data: { labels: labels, datasets: [{ label: 'Peso Total (Kg)', data: historicalData.map(d => d.peso), borderColor: getColor('--color-accent-blue'), backgroundColor: 'rgba(147, 197, 253, 0.2)', fill: true, }] }
+            data: { labels: labels, datasets: [{ label: 'Peso Total (Kg)', data: historicalData.map(d => d.peso), borderColor: getColor('--color-accent-blue'), backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, }] }
         });
 
+        // 2. Grasa Visceral
         new Chart(document.getElementById('grasaVisceralChart'), {
             ...chartConfigBase,
-            data: { labels: labels, datasets: [{ label: 'Grasa Visceral (Nivel)', data: historicalData.map(d => d.grasaVisceral), borderColor: getColor('--color-accent-neg'), backgroundColor: 'rgba(252, 165, 165, 0.2)', fill: true, }] }
+            data: { labels: labels, datasets: [{ label: 'Grasa Visceral (Nivel)', data: historicalData.map(d => d.grasaVisceral), borderColor: getColor('--color-accent-neg'), backgroundColor: 'rgba(220, 38, 38, 0.1)', fill: true, }] }
         });
 
+        // 3. Músculo Esquelético vs. Grasa Corporal
         new Chart(document.getElementById('musculoGrasaChart'), {
             ...chartConfigBase,
             data: { labels: labels, datasets: [
-                    { label: 'Músculo Esquelético (%)', data: historicalData.map(d => d.musculoEsqueletico), borderColor: getColor('--color-accent-pos'), backgroundColor: 'rgba(110, 231, 183, 0.1)', fill: false, pointBackgroundColor: getColor('--color-accent-pos') },
-                    { label: 'Grasa Corporal (%)', data: historicalData.map(d => d.grasaCorporal), borderColor: getColor('--color-accent-neg'), backgroundColor: 'rgba(252, 165, 165, 0.1)', fill: false, pointBackgroundColor: getColor('--color-accent-neg') }
+                    { label: 'Músculo Esquelético (%)', data: historicalData.map(d => d.musculoEsqueletico), borderColor: getColor('--color-accent-pos'), backgroundColor: 'rgba(5, 150, 105, 0.1)', fill: false, pointBackgroundColor: getColor('--color-accent-pos') },
+                    { label: 'Grasa Corporal (%)', data: historicalData.map(d => d.grasaCorporal), borderColor: getColor('--color-accent-neg'), backgroundColor: 'rgba(220, 38, 38, 0.1)', fill: false, pointBackgroundColor: getColor('--color-accent-neg') }
                 ]
             }
         });
 
+        // 4. Metabolismo Basal vs. Edad Corporal (Doble Eje Y)
         new Chart(document.getElementById('metabolismoEdadChart'), {
             ...chartConfigBase,
             data: {
                 labels: labels,
                 datasets: [
                     { label: 'Metabolismo Basal (Kcal)', data: historicalData.map(d => d.mb), borderColor: getColor('--color-text-subtle'), backgroundColor: 'rgba(107, 114, 128, 0.1)', fill: false, yAxisID: 'yMb' },
-                    { label: 'Edad Corporal (Años)', data: historicalData.map(d => d.edadCorporal), borderColor: getColor('--color-accent-pos'), backgroundColor: 'rgba(110, 231, 183, 0.1)', fill: false, yAxisID: 'yEdad' }
+                    { label: 'Edad Corporal (Años)', data: historicalData.map(d => d.edadCorporal), borderColor: getColor('--color-accent-blue'), backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: false, yAxisID: 'yEdad' }
                 ]
             },
             options: {
@@ -432,7 +442,7 @@
                 scales: {
                     x: chartConfigBase.options.scales.x,
                     yMb: { type: 'linear', position: 'left', title: { display: true, text: 'Kcal', color: getColor('--color-text') }, ticks: { color: getColor('--color-text-subtle') }, grid: { color: getColor('--color-divider') } },
-                    yEdad: { type: 'linear', position: 'right', title: { display: true, text: 'Años', color: getColor('--color-text') }, ticks: { color: getColor('--color-accent-pos') }, grid: { drawOnChartArea: false } }
+                    yEdad: { type: 'linear', position: 'right', title: { display: true, text: 'Edad (Años)', color: getColor('--color-accent-blue') }, ticks: { color: getColor('--color-accent-blue') }, grid: { drawOnChartArea: false } }
                 }
             }
         });
