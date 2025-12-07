@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mar y Hierro 1K | Bio-Rendimiento y Estrategia Nutricional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <style>
+        /* BASE MINIMALISTA (Modo Oscuro) */
+        :root {
+            --color-bg: #121212;
+            --color-surface: #1e1e1e;
+            --color-text: #F5F5F5;
+            --color-accent-pos: #00C49F;
+            --color-accent-neg: #FF8042;
+            --color-progress: #A0AEC0;
+            --color-divider: #333333;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            gap: 30px;
+        }
+        h1, h2, h3 { color: var(--color-text); font-weight: 300; margin-top: 0; }
+        .card { background-color: var(--color-surface); padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); transition: all 0.3s ease; }
+        .header { text-align: center; padding: 40px 0 20px 0; border-bottom: 1px solid var(--color-divider); margin-bottom: 30px; }
+        .about-card { display: flex; align-items: center; gap: 30px; }
+        .about-image-wrapper { flex-shrink: 0; width: 150px; height: 150px; border-radius: 50%; overflow: hidden; border: 4px solid var(--color-accent-pos); }
+        .about-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .about-text h3 { margin-bottom: 10px; color: var(--color-accent-pos); }
+        @media (max-width: 768px) { .about-card { flex-direction: column; text-align: center; } .about-image-wrapper { margin-bottom: 15px; } }
+        .current-data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .data-point { text-align: center; padding: 15px; border-left: 3px solid var(--color-progress); transition: background-color 0.3s; }
+        .data-point strong { display: block; font-size: 2.2em; font-weight: 700; color: var(--color-accent-pos); }
+        .data-point span { font-size: 0.8em; color: var(--color-progress); }
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; }
+        .chart-card { min-height: 350px; }
+        .disclosure-content { display: none; padding: 20px 0; border-top: 1px dashed var(--color-divider); margin-top: 20px; }
+        .disclosure-content table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+        .disclosure-content th, .disclosure-content td { padding: 10px; border-bottom: 1px solid var(--color-divider); text-align: left; }
+        .disclosure-content th { color: var(--color-accent-pos); font-weight: 400; }
+        .button-group { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+        .btn-toggle { background-color: var(--color-progress); color: var(--color-bg); padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; transition: background-color 0.3s; display: inline-flex; align-items: center; }
+        .btn-toggle:hover { background-color: var(--color-accent-pos); }
+        .btn-toggle i { margin-right: 8px; }
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .tiktok-embed-wrapper { display: flex; justify-content: center; align-items: center; min-height: 400px; }
+        .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--color-divider); text-align: center; font-size: 0.8em; color: var(--color-progress); }
+        .disclaimer { background-color: #242424; padding: 15px; border-radius: 4px; margin-top: 15px; line-height: 1.4; }
+        .milestone-list { list-style: none; padding: 0; }
+        .milestone-list li { background-color: #242424; padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; align-items: center; font-size: 1.1em; border-left: 5px solid transparent; }
+        .milestone-list li.complete { border-left-color: var(--color-accent-pos); }
+        .milestone-list li.incomplete { border-left-color: var(--color-accent-neg); }
+        .milestone-list i { margin-right: 15px; font-size: 1.4em; }
+        .complete i { color: var(--color-accent-pos); }
+        .incomplete i { color: var(--color-accent-neg); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <h1 style="font-weight: 700;">Mar y Hierro 1K</h1>
+        <h2 style="color: var(--color-progress); margin-top: -10px; font-size: 1.2em; border-bottom: 1px solid var(--color-divider); padding-bottom: 10px;">Bio-Rendimiento y Estrategia Nutricional</h2>
+        <h3 style="color: var(--color-progress); font-size: 1.5em; font-weight: 400;">Cargando Datos...</h3>
+    </header>
+
+    <section class="card about-card">
+        <div class="about-image-wrapper">
+            <img src="tu_foto_de_perfil.jpg" alt="Foto de Miguel Siña" loading="lazy">
+        </div>
+        <div class="about-text">
+            <h3><i class="fas fa-user-circle"></i> **Sobre Miguel Siña**</h3>
+            <p>Soy **Miguel Siña**, estudiante de nutrición y atleta en construcción.</p>
+            <p>**Mar y Hierro 1K** es mi laboratorio personal. Aquí documento mi proceso de recomposición corporal de **1000 días**, aplicando la ciencia nutricional y la fisiología del deporte en mi propio cuerpo.</p>
+            <p>A los 47 años, decidí que la teoría no sirve de nada si no se aplica. Me formo académicamente con un solo objetivo: **dominar la evidencia para ayudar a quienes, como yo, buscan optimizar su salud**. Hoy soy el sujeto de prueba sometiendo la teoría al estrés del hierro y al frío del mar.</p>
+            <p style="color: var(--color-accent-pos);">Acompáñame a descubrir qué sucede cuando la ciencia se encuentra con la disciplina.</p>
+        </div>
+    </section>
+
+    <section class="card">
+        <h3><i class="fas fa-chart-line"></i> **Métricas Actuales**</h3>
+        <div class="current-data-grid">
+            <div class="data-point"><span>Peso Total</span> <strong>--</strong> Kg</div>
+            <div class="data-point"><span>Grasa Visceral</span> <strong>--</strong> Nivel</div>
+            <div class="data-point"><span>Grasa Corporal</span> <strong>--</strong> %</div>
+            <div class="data-point"><span>Músculo Esquelético</span> <strong>--</strong> %</div>
+            <div class="data-point"><span>Edad Corporal</span> <strong>--</strong> Años</div>
+            <div class="data-point"><span>Metabolismo Basal</span> <strong>--</strong> Kcal</div>
+            <div class="data-point"><span>IMC</span> <strong>--</strong></div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-toggle" onclick="document.getElementById('tech-data').style.display = document.getElementById('tech-data').style.display === 'block' ? 'none' : 'block';">
+                <i class="fas fa-microscope"></i> Ver Detalles Técnicos
+            </button>
+            <button class="btn-toggle" style="background-color: var(--color-accent-pos);" onclick="alert('INSTRUCCIONES DE ACTUALIZACIÓN (GitHub Pages / Google Sheets):\n\n1. Abra su Hoja de Cálculo de Google Sheets.\n2. Añada una nueva fila con la fecha y los 9 datos nuevos.\n3. Recargue esta página web en su navegador. ¡Los datos se actualizarán automáticamente!');">
+                <i class="fas fa-upload"></i> **¿Cómo Actualizo los Datos?**
+            </button>
+        </div>
+
+        <div id="tech-data" class="disclosure-content">
+            <h4>Variación de Indicadores (Día Anterior vs. Último Día)</h4>
+            <table id="variation-table">
+                <thead>
+                    <tr>
+                        <th>Biomarcador</th>
+                        <th>Día Anterior</th>
+                        <th>Día Actual</th>
+                        <th>Variación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="card">
+        <h3><i class="fas fa-chart-area"></i> **Evolución y Tendencia de Biomarcadores**</h3>
+        <p style="font-size: 0.9em; color: var(--color-progress);">*Los gráficos se actualizan automáticamente desde Google Sheets.*</p>
+        <div class="chart-grid">
+            <div class="card chart-card"><canvas id="pesoChart"></canvas></div>
+            <div class="card chart-card"><canvas id="grasaVisceralChart"></canvas></div>
+            <div class="card chart-card"><canvas id="musculoGrasaChart"></canvas></div>
+            <div class="card chart-card"><canvas id="metabolismoEdadChart"></canvas></div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h3><i class="fas fa-trophy"></i> **Hitos de Graduación (Fase 1: Recomposición y Cimientos)**</h3>
+        <ul class="milestone-list">
+            <li class="complete"><i class="fas fa-check-circle"></i> Constancia: 3 Ciclos de 9 días perfectos seguidos (Asumido: Logrado)</li>
+            <li class="incomplete"><i class="fas fa-times-circle"></i> Peso: < 92.0 kg (Actual: -- kg)</li>
+            <li class="incomplete"><i class="fas fa-times-circle"></i> Grasa Visceral: Nivel 13 o 14 (Actual: --)</li>
+            <li class="incomplete"><i class="fas fa-times-circle"></i> Movilidad: Squat profundo (Goblet) sin dolor ni levantar talones</li>
+        </ul>
+    </section>
+
+    <section class="card">
+        <h3><i class="fas fa-share-alt"></i> **Evidencia y Social Media**</h3>
+        <div class="media-grid">
+            <div class="card">
+                <h4>Entrenamiento de la Semana (YouTube)</h4>
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/YOUR_VIDEO_ID?rel=0" 
+                        title="Evidencia de Entrenamiento" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+            <div class="card">
+                <h4>Tip Nutricional (TikTok)</h4>
+                <div class="tiktok-embed-wrapper">
+                    <iframe 
+                        src="https://www.tiktok.com/embed/YOUR_TIKTOK_ID"
+                        title="TikTok de la Semana"
+                        allowfullscreen
+                        loading="lazy"
+                        style="max-width: 320px; width: 100%; height: 400px; border: none;">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <span>© 2025 Mar y Hierro 1K | Desarrollado por Miguel Siña.</span>
+        <div class="disclaimer">
+            **Descargo de responsabilidad:** El contenido de este sitio refleja mi experiencia personal y mi investigación como estudiante de nutrición. **No sustituye el asesoramiento médico profesional personalizado.**
+        </div>
+    </div>
+</footer>
+
+<script>
+    // *******************************************************************
+    // ✅ URL FINAL CON GID=1001433176
+    // *******************************************************************
+    const DATA_SOURCE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJO4KEjVENFOmQ990F5qLySlLNDkK6IYScxL2R_onnjIDOGbA4PHHSnPla5VexqDsZc5aAEcjfsY7R/pub?gid=1001433176&single=true&output=json"; 
+    
+    // Nombres de las variables para la tabla de variación
+    const variableNames = {
+        peso: 'Peso Total (Kg)',
+        grasaVisceral: 'Grasa Visceral (Nivel)',
+        musculoEsqueletico: 'Músculo Esquelético (%)',
+        grasaCorporal: 'Grasa Corporal (%)',
+        edadCorporal: 'Edad Corporal (Años)',
+        imc: 'IMC (Body Mass Index)',
+        mb: 'Metabolismo Basal (Kcal)'
+    };
+    
+    function formatVariation(current, previous, variableKey) {
+        const diff = current - previous;
+        let color = '';
+        
+        // Reglas de color para el diseño BioVis (Verde para progreso, Naranja para alerta)
+        if (variableKey === 'peso' || variableKey === 'grasaVisceral' || variableKey === 'grasaCorporal' || variableKey === 'imc') {
+            color = diff <= 0 ? 'var(--color-accent-pos)' : 'var(--color-accent-neg)';
+        } else if (variableKey === 'musculoEsqueletico') {
+            color = diff >= 0 ? 'var(--color-accent-pos)' : 'var(--color-accent-neg)';
+        } else {
+            color = diff <= 0 ? 'var(--color-accent-pos)' : 'var(--color-progress)';
+        }
+        
+        return `<td style="color: ${color};">${diff > 0 ? '+' : ''}${diff.toFixed(1)}</td>`;
+    }
+
+    async function loadDataAndDrawCharts() {
+        try {
+            const response = await fetch(DATA_SOURCE_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}. Por favor, verifica la publicación de Google Sheets.`);
+            }
+            const data = await response.json();
+            
+            let jsonText = JSON.stringify(data);
+            const dataObject = JSON.parse(jsonText);
+            const rawEntries = dataObject.feed.entry; 
+            
+            const historicalData = rawEntries.map(item => ({
+                day: parseInt(item.gsx$day.$t),
+                date: item.gsx$date.$t,
+                peso: parseFloat(item.gsx$peso.$t),
+                grasaVisceral: parseInt(item.gsx$grasavisceral.$t),
+                musculoEsqueletico: parseFloat(item.gsx$musculoesqueletico.$t),
+                grasaCorporal: parseFloat(item.gsx$grasacorporal.$t),
+                edadCorporal: parseInt(item.gsx$edadcorporal.$t),
+                imc: parseFloat(item.gsx$imc.$t),
+                mb: parseInt(item.gsx$mb.$t)
+            }));
+            
+            if (historicalData.length === 0) {
+                throw new Error("No hay datos en la hoja de cálculo.");
+            }
+
+            const latestData = historicalData[historicalData.length - 1];
+            const previousData = historicalData.length > 1 ? historicalData[historicalData.length - 2] : null;
+            
+            document.querySelector('.header h3').innerHTML = `Día **${latestData.day} / 1000** | Fase 1: **Recomposición y Cimientos** (${latestData.date})`;
+
+            const currentDataPoints = [
+                latestData.peso.toFixed(1), latestData.grasaVisceral, latestData.grasaCorporal.toFixed(1), 
+                latestData.musculoEsqueletico.toFixed(1), latestData.edadCorporal, latestData.mb, latestData.imc.toFixed(1)
+            ];
+            document.querySelectorAll('.current-data-grid strong').forEach((el, i) => { el.textContent = currentDataPoints[i]; });
+
+            // Actualizar Hitos
+            document.querySelector('.milestone-list li:nth-child(2) i').className = latestData.peso < 92.0 ? 'fas fa-check-circle' : 'fas fa-times-circle';
+            document.querySelector('.milestone-list li:nth-child(2)').className = latestData.peso < 92.0 ? 'complete' : 'incomplete';
+            document.querySelector('.milestone-list li:nth-child(2)').lastChild.textContent = ` Peso: < 92.0 kg (Actual: ${latestData.peso.toFixed(1)} kg)`;
+
+            document.querySelector('.milestone-list li:nth-child(3) i').className = latestData.grasaVisceral <= 14 ? 'fas fa-check-circle' : 'fas fa-times-circle';
+            document.querySelector('.milestone-list li:nth-child(3)').className = latestData.grasaVisceral <= 14 ? 'complete' : 'incomplete';
+            document.querySelector('.milestone-list li:nth-child(3)').lastChild.textContent = ` Grasa Visceral: Nivel 13 o 14 (Actual: ${latestData.grasaVisceral})`;
+            
+            if (previousData) {
+                const tableBody = document.querySelector('#variation-table tbody');
+                tableBody.innerHTML = '';
+                Object.keys(variableNames).forEach(key => {
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${variableNames[key]}</td>
+                        <td>${previousData[key].toFixed(1)}</td>
+                        <td>${latestData[key].toFixed(1)}</td>
+                        ${formatVariation(latestData[key], previousData[key], key)}
+                    `;
+                });
+            }
+
+            drawCharts(historicalData);
+
+        } catch (error) {
+            console.error("Error al cargar los datos de Google Sheets:", error);
+            document.querySelector('.header h3').innerHTML = '⚠️ ERROR: No se pudieron cargar los datos. Revisa la URL y la publicación.';
+            document.querySelector('.current-data-grid').innerHTML = '<p style="color: var(--color-accent-neg); text-align: center;">Error al conectar con la fuente de datos. Por favor, verifica la Hoja de Cálculo y la URL en la línea 72 del código.</p>';
+        }
+    }
+
+    function drawCharts(historicalData) {
+        Chart.getChart("pesoChart")?.destroy();
+        Chart.getChart("grasaVisceralChart")?.destroy();
+        Chart.getChart("musculoGrasaChart")?.destroy();
+        Chart.getChart("metabolismoEdadChart")?.destroy();
+
+        const labels = historicalData.map(d => `Día ${d.day}`);
+        
+        const chartConfigBase = {
+            type: 'line',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Días de Progreso', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } },
+                    y: { title: { display: true, text: 'Valor', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } }
+                },
+                plugins: {
+                    legend: { labels: { color: 'var(--color-text)' } },
+                    tooltip: { 
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) { label += context.parsed.y.toFixed(1); } 
+                                return label;
+                            }
+                        },
+                        backgroundColor: 'rgba(0,0,0,0.7)', titleColor: 'var(--color-accent-pos)', bodyColor: 'var(--color-text)'
+                    }
+                },
+                elements: { line: { tension: 0.4, borderWidth: 3 }, point: { radius: 5, hoverRadius: 7 } }
+            }
+        };
+
+        new Chart(document.getElementById('pesoChart'), {
+            ...chartConfigBase,
+            data: { labels: labels, datasets: [{ label: 'Peso Total (Kg)', data: historicalData.map(d => d.peso), borderColor: 'var(--color-progress)', backgroundColor: 'rgba(160, 174, 192, 0.2)', fill: true, }] }
+        });
+
+        new Chart(document.getElementById('grasaVisceralChart'), {
+            ...chartConfigBase,
+            data: { labels: labels, datasets: [{ label: 'Grasa Visceral (Nivel)', data: historicalData.map(d => d.grasaVisceral), borderColor: 'var(--color-accent-neg)', backgroundColor: 'rgba(255, 128, 66, 0.2)', fill: true, }] }
+        });
+
+        new Chart(document.getElementById('musculoGrasaChart'), {
+            ...chartConfigBase,
+            data: { labels: labels, datasets: [
+                    { label: 'Músculo Esquelético (%)', data: historicalData.map(d => d.musculoEsqueletico), borderColor: 'var(--color-accent-pos)', backgroundColor: 'rgba(0, 196, 159, 0.1)', fill: false, pointBackgroundColor: 'var(--color-accent-pos)' },
+                    { label: 'Grasa Corporal (%)', data: historicalData.map(d => d.grasaCorporal), borderColor: 'var(--color-accent-neg)', backgroundColor: 'rgba(255, 128, 66, 0.1)', fill: false, pointBackgroundColor: 'var(--color-accent-neg)' }
+                ]
+            }
+        });
+
+        new Chart(document.getElementById('metabolismoEdadChart'), {
+            ...chartConfigBase,
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Metabolismo Basal (Kcal)', data: historicalData.map(d => d.mb), borderColor: 'var(--color-progress)', backgroundColor: 'rgba(160, 174, 192, 0.1)', fill: false, yAxisID: 'yMb' },
+                    { label: 'Edad Corporal (Años)', data: historicalData.map(d => d.edadCorporal), borderColor: 'var(--color-accent-pos)', backgroundColor: 'rgba(0, 196, 159, 0.1)', fill: false, yAxisID: 'yEdad' }
+                ]
+            },
+            options: {
+                ...chartConfigBase.options,
+                scales: {
+                    x: chartConfigBase.options.scales.x,
+                    yMb: { type: 'linear', position: 'left', title: { display: true, text: 'Kcal', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } },
+                    yEdad: { type: 'linear', position: 'right', title: { display: true, text: 'Años', color: 'var(--color-text)' }, ticks: { color: 'var(--color-accent-pos)' }, grid: { drawOnChartArea: false } }
+                }
+            }
+        });
+    }
+
+    loadDataAndDrawCharts();
+</script>
+
+</body>
+</html>
