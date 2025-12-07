@@ -9,22 +9,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <style>
-        /* BASE MINIMALISTA (Modo Oscuro) */
+        /* BASE MINIMALISTA (Modo Claro) */
         :root {
-            --color-bg: #121212;
-            --color-surface: #1e1e1e;
-            --color-text: #F5F5F5;
-            --color-accent-pos: #00C49F;
-            --color-accent-neg: #FF8042;
-            --color-progress: #A0AEC0;
-            --color-divider: #333333;
+            --color-bg: #F9FAFB;           /* Gris Blanco Muy Suave */
+            --color-surface: #FFFFFF;      /* Blanco Puro */
+            --color-text: #1F2937;         /* Gris Oscuro Principal */
+            --color-text-subtle: #6B7280;  /* Gris Suave para subtítulos */
+            --color-accent-blue: #93C5FD;  /* Azul Pastel Suave */
+            --color-accent-pos: #6EE7B7;   /* Verde Menta Suave */
+            --color-accent-neg: #FCA5A5;   /* Rojo Salmón Suave */
+            --color-divider: #E5E7EB;      /* Divisor Gris Claro */
         }
         body {
             font-family: 'Roboto', sans-serif;
             background-color: var(--color-bg);
             color: var(--color-text);
             margin: 0;
-            padding: 20px;
+            padding: 30px;
             line-height: 1.6;
         }
         .container {
@@ -33,153 +34,209 @@
             display: grid;
             gap: 30px;
         }
-        h1, h2, h3 { color: var(--color-text); font-weight: 300; margin-top: 0; }
-        .card { background-color: var(--color-surface); padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); transition: all 0.3s ease; }
-        .header { text-align: center; padding: 40px 0 20px 0; border-bottom: 1px solid var(--color-divider); margin-bottom: 30px; }
-        .about-card { display: flex; align-items: center; gap: 30px; }
-        .about-image-wrapper { flex-shrink: 0; width: 150px; height: 150px; border-radius: 50%; overflow: hidden; border: 4px solid var(--color-accent-pos); }
-        .about-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .about-text h3 { margin-bottom: 10px; color: var(--color-accent-pos); }
-        @media (max-width: 768px) { .about-card { flex-direction: column; text-align: center; } .about-image-wrapper { margin-bottom: 15px; } }
-        .current-data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .data-point { text-align: center; padding: 15px; border-left: 3px solid var(--color-progress); transition: background-color 0.3s; }
-        .data-point strong { display: block; font-size: 2.2em; font-weight: 700; color: var(--color-accent-pos); }
-        .data-point span { font-size: 0.8em; color: var(--color-progress); }
-        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; }
-        .chart-card { min-height: 350px; }
-        .disclosure-content { display: none; padding: 20px 0; border-top: 1px dashed var(--color-divider); margin-top: 20px; }
-        .disclosure-content table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
-        .disclosure-content th, .disclosure-content td { padding: 10px; border-bottom: 1px solid var(--color-divider); text-align: left; }
-        .disclosure-content th { color: var(--color-accent-pos); font-weight: 400; }
-        .button-group { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
-        .btn-toggle { background-color: var(--color-progress); color: var(--color-bg); padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; transition: background-color 0.3s; display: inline-flex; align-items: center; }
-        .btn-toggle:hover { background-color: var(--color-accent-pos); }
-        .btn-toggle i { margin-right: 8px; }
-        .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .tiktok-embed-wrapper { display: flex; justify-content: center; align-items: center; min-height: 400px; }
-        .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--color-divider); text-align: center; font-size: 0.8em; color: var(--color-progress); }
-        .disclaimer { background-color: #242424; padding: 15px; border-radius: 4px; margin-top: 15px; line-height: 1.4; }
-        .milestone-list { list-style: none; padding: 0; }
-        .milestone-list li { background-color: #242424; padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; align-items: center; font-size: 1.1em; border-left: 5px solid transparent; }
-        .milestone-list li.complete { border-left-color: var(--color-accent-pos); }
-        .milestone-list li.incomplete { border-left-color: var(--color-accent-neg); }
-        .milestone-list i { margin-right: 15px; font-size: 1.4em; }
-        .complete i { color: var(--color-accent-pos); }
+
+        /* TIPOGRAFÍA Y ESTRUCTURA */
+        h1 { font-weight: 700; font-size: 2.5em; margin-bottom: 5px; }
+        h2 { color: var(--color-text-subtle); font-weight: 400; font-size: 1.1em; margin-top: 0; }
+        h3 { font-weight: 600; font-size: 1.3em; color: var(--color-text); }
+
+        .card {
+            background-color: var(--color-surface);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra muy sutil */
+        }
+
+        /* 1. SECCIÓN DE PROGRESO SUPERIOR */
+        .progress-header {
+            text-align: center;
+            padding: 10px 0 20px 0;
+            margin-bottom: 20px;
+        }
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 8px;
+            background-color: var(--color-divider);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 15.7%; /* (157 / 1000) * 100% */
+            background-color: var(--color-accent-blue);
+            transition: width 0.5s ease-out;
+        }
+
+        /* 2. LAYOUT PRINCIPAL (Gráficos vs. Biografía) */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 3fr 1fr; /* 75% para datos, 25% para biografía */
+            gap: 30px;
+        }
+
+        /* 3. SECCIÓN SOBRE MÍ (Vertical y Suave) */
+        .about-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 15px;
+            border-left: 1px solid var(--color-divider); /* Separador sutil */
+        }
+        .about-image-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--color-accent-blue); /* Borde azul pastel */
+            margin: 0 auto 15px auto;
+        }
+        .about-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .about-text { font-size: 0.9em; text-align: left; }
+        .about-text strong { color: var(--color-accent-blue); font-weight: 600; }
+        .about-text p:first-of-type { font-weight: 600; }
+        
+        /* 4. GRÁFICOS */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        .chart-card {
+            min-height: 350px;
+            padding: 20px; /* Reducir padding de gráficos */
+        }
+
+        /* 5. MÉTRICAS Y DISCLOSURE */
+        .data-point { text-align: center; padding: 15px; border-left: 3px solid var(--color-accent-blue); }
+        .data-point strong { color: var(--color-text); font-weight: 700; display: block; font-size: 2em; }
+        .data-point span { font-size: 0.8em; color: var(--color-text-subtle); }
+        .btn-toggle { background-color: var(--color-text-subtle); color: white; }
+        .disclosure-content th { color: var(--color-text); }
+        .disclosure-content td { color: var(--color-text); }
+        
+        /* Hitos */
+        .milestone-list li { background-color: var(--color-surface); border: 1px solid var(--color-divider); }
         .incomplete i { color: var(--color-accent-neg); }
+        .complete i { color: var(--color-accent-pos); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr; /* Una sola columna en móvil */
+            }
+            .about-card {
+                border-left: none;
+                border-top: 1px solid var(--color-divider);
+                padding-top: 20px;
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header class="header">
-        <h1 style="font-weight: 700;">Mar y Hierro 1K</h1>
-        <h2 style="color: var(--color-progress); margin-top: -10px; font-size: 1.2em; border-bottom: 1px solid var(--color-divider); padding-bottom: 10px;">Bio-Rendimiento y Estrategia Nutricional</h2>
-        <h3 style="color: var(--color-progress); font-size: 1.5em; font-weight: 400;">Cargando Datos...</h3>
+
+    <header class="progress-header">
+        <h1>Mar y Hierro 1K</h1>
+        <h2>Bio-Rendimiento y Estrategia Nutricional</h2>
+        
+        <div class="progress-bar-wrapper">
+            <div id="progress-bar-fill" class="progress-bar"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.9em; color: var(--color-text-subtle);">
+            <span>Día 1</span>
+            <span id="current-day-info">Día 157 / 1000 (05/12/2025)</span>
+            <span>Día 1000</span>
+        </div>
     </header>
 
-    <section class="card about-card">
-        <div class="about-image-wrapper">
-            <img src="tu_foto_de_perfil.jpg" alt="Foto de Miguel Siña" loading="lazy">
-        </div>
-        <div class="about-text">
-            <h3><i class="fas fa-user-circle"></i> **Sobre Miguel Siña**</h3>
-            <p>Soy **Miguel Siña**, estudiante de nutrición y atleta en construcción.</p>
-            <p>**Mar y Hierro 1K** es mi laboratorio personal. Aquí documento mi proceso de recomposición corporal de **1000 días**, aplicando la ciencia nutricional y la fisiología del deporte en mi propio cuerpo.</p>
-            <p>A los 47 años, decidí que la teoría no sirve de nada si no se aplica. Me formo académicamente con un solo objetivo: **dominar la evidencia para ayudar a quienes, como yo, buscan optimizar su salud**. Hoy soy el sujeto de prueba sometiendo la teoría al estrés del hierro y al frío del mar.</p>
-            <p style="color: var(--color-accent-pos);">Acompáñame a descubrir qué sucede cuando la ciencia se encuentra con la disciplina.</p>
-        </div>
-    </section>
+    <div class="main-layout">
+        <section class="data-and-charts-area">
+            
+            <div class="card" style="margin-bottom: 30px;">
+                <h3><i class="fas fa-chart-line"></i> **Métricas Actuales**</h3>
+                <div class="current-data-grid">
+                    <div class="data-point"><span>Peso Total</span> <strong>--</strong> Kg</div>
+                    <div class="data-point"><span>Grasa Visceral</span> <strong>--</strong> Nivel</div>
+                    <div class="data-point"><span>Grasa Corporal</span> <strong>--</strong> %</div>
+                    <div class="data-point"><span>Músculo Esquelético</span> <strong>--</strong> %</div>
+                    <div class="data-point"><span>Edad Corporal</span> <strong>--</strong> Años</div>
+                    <div class="data-point"><span>Metabolismo Basal</span> <strong>--</strong> Kcal</div>
+                    <div class="data-point"><span>IMC</span> <strong>--</strong></div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-toggle" onclick="document.getElementById('tech-data').style.display = document.getElementById('tech-data').style.display === 'block' ? 'none' : 'block';">
+                        <i class="fas fa-microscope"></i> Ver Detalles Técnicos
+                    </button>
+                    <button class="btn-toggle" style="background-color: var(--color-accent-blue);" onclick="alert('INSTRUCCIONES DE ACTUALIZACIÓN:\n\n1. Ve a tu archivo index.html en GitHub.\n2. Busca // ZONA DE EDICIÓN DE DATOS.\n3. Añade la nueva línea de datos con tu último control.\n4. ¡Guarda y confirma los cambios (Commit)!');">
+                        <i class="fas fa-upload"></i> **¿Cómo Actualizo los Datos?**
+                    </button>
+                </div>
 
-    <section class="card">
-        <h3><i class="fas fa-chart-line"></i> **Métricas Actuales**</h3>
-        <div class="current-data-grid">
-            <div class="data-point"><span>Peso Total</span> <strong>--</strong> Kg</div>
-            <div class="data-point"><span>Grasa Visceral</span> <strong>--</strong> Nivel</div>
-            <div class="data-point"><span>Grasa Corporal</span> <strong>--</strong> %</div>
-            <div class="data-point"><span>Músculo Esquelético</span> <strong>--</strong> %</div>
-            <div class="data-point"><span>Edad Corporal</span> <strong>--</strong> Años</div>
-            <div class="data-point"><span>Metabolismo Basal</span> <strong>--</strong> Kcal</div>
-            <div class="data-point"><span>IMC</span> <strong>--</strong></div>
-        </div>
-        
-        <div class="button-group">
-            <button class="btn-toggle" onclick="document.getElementById('tech-data').style.display = document.getElementById('tech-data').style.display === 'block' ? 'none' : 'block';">
-                <i class="fas fa-microscope"></i> Ver Detalles Técnicos
-            </button>
-            <button class="btn-toggle" style="background-color: var(--color-accent-pos);" onclick="alert('INSTRUCCIONES DE ACTUALIZACIÓN:\n\n1. Ve a tu archivo index.html en GitHub.\n2. Busca // ZONA DE EDICIÓN DE DATOS (al final del código).\n3. Copia la última línea de datos, modifícala con tus nuevos números del día 168 (o el que corresponda) y pégala abajo.\n4. ¡Guarda y confirma los cambios (Commit)!');">
-                <i class="fas fa-upload"></i> **¿Cómo Actualizo los Datos?**
-            </button>
-        </div>
-
-        <div id="tech-data" class="disclosure-content">
-            <h4>Variación de Indicadores (Día Anterior vs. Último Día)</h4>
-            <table id="variation-table">
-                <thead>
-                    <tr>
-                        <th>Biomarcador</th>
-                        <th>Día Anterior</th>
-                        <th>Día Actual</th>
-                        <th>Variación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <section class="card">
-        <h3><i class="fas fa-chart-area"></i> **Evolución y Tendencia de Biomarcadores**</h3>
-        <p style="font-size: 0.9em; color: var(--color-progress);">*Los gráficos se dibujan con los datos históricos guardados en este archivo.*</p>
-        <div class="chart-grid">
-            <div class="card chart-card"><canvas id="pesoChart"></canvas></div>
-            <div class="card chart-card"><canvas id="grasaVisceralChart"></canvas></div>
-            <div class="card chart-card"><canvas id="musculoGrasaChart"></canvas></div>
-            <div class="card chart-card"><canvas id="metabolismoEdadChart"></canvas></div>
-        </div>
-    </section>
-
-    <section class="card">
-        <h3><i class="fas fa-trophy"></i> **Hitos de Graduación (Fase 1: Recomposición y Cimientos)**</h3>
-        <ul class="milestone-list">
-            <li class="complete"><i class="fas fa-check-circle"></i> Constancia: 3 Ciclos de 9 días perfectos seguidos (Asumido: Logrado)</li>
-            <li class="incomplete"><i class="fas fa-times-circle"></i> Peso: < 92.0 kg (Actual: -- kg)</li>
-            <li class="incomplete"><i class="fas fa-times-circle"></i> Grasa Visceral: Nivel 13 o 14 (Actual: --)</li>
-            <li class="incomplete"><i class="fas fa-times-circle"></i> Movilidad: Squat profundo (Goblet) sin dolor ni levantar talones</li>
-        </ul>
-    </section>
-
-    <section class="card">
-        <h3><i class="fas fa-share-alt"></i> **Evidencia y Social Media**</h3>
-        <div class="media-grid">
-            <div class="card">
-                <h4>Entrenamiento de la Semana (YouTube)</h4>
-                <div class="video-wrapper">
-                    <iframe 
-                        src="https://www.youtube.com/embed/YOUR_VIDEO_ID?rel=0" 
-                        title="Evidencia de Entrenamiento" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen
-                        loading="lazy">
-                    </iframe>
+                <div id="tech-data" class="disclosure-content">
+                    <h4>Variación de Indicadores (Día Anterior vs. Último Día)</h4>
+                    <table id="variation-table">
+                        <thead>
+                            <tr>
+                                <th>Biomarcador</th>
+                                <th>Día Anterior</th>
+                                <th>Día Actual</th>
+                                <th>Variación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="card">
-                <h4>Tip Nutricional (TikTok)</h4>
-                <div class="tiktok-embed-wrapper">
-                    <iframe 
-                        src="https://www.tiktok.com/embed/YOUR_TIKTOK_ID"
-                        title="TikTok de la Semana"
-                        allowfullscreen
-                        loading="lazy"
-                        style="max-width: 320px; width: 100%; height: 400px; border: none;">
-                    </iframe>
+
+            <section style="margin-bottom: 30px;">
+                <h3><i class="fas fa-chart-area"></i> **Evolución y Tendencia**</h3>
+                <div class="chart-grid">
+                    <div class="card chart-card"><canvas id="pesoChart"></canvas></div>
+                    <div class="card chart-card"><canvas id="grasaVisceralChart"></canvas></div>
+                    <div class="card chart-card"><canvas id="musculoGrasaChart"></canvas></div>
+                    <div class="card chart-card"><canvas id="metabolismoEdadChart"></canvas></div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h3><i class="fas fa-trophy"></i> **Hitos de Graduación** (Fase 1)</h3>
+                <ul class="milestone-list">
+                    <li class="complete"><i class="fas fa-check-circle"></i> Constancia: 3 Ciclos de 9 días perfectos seguidos.</li>
+                    <li class="incomplete"><i class="fas fa-times-circle"></i> Peso: < 92.0 kg (Actual: 100.6 kg)</li>
+                    <li class="incomplete"><i class="fas fa-times-circle"></i> Grasa Visceral: Nivel 13 o 14 (Actual: 18)</li>
+                    <li class="incomplete"><i class="fas fa-times-circle"></i> Movilidad: Squat profundo (Goblet) sin dolor ni levantar talones.</li>
+                </ul>
+            </section>
+
+        </section>
+
+        <section class="card about-card">
+            <div class="about-image-wrapper">
+                <img src="tu_foto_de_perfil.jpg" alt="Foto de Miguel Siña" loading="lazy">
+            </div>
+            <div class="about-text">
+                <h3 style="margin-bottom: 5px; text-align: center;">Miguel Siña</h3>
+                <p style="text-align: center; color: var(--color-accent-blue); font-weight: 500;">Estudiante y Atleta en Construcción</p>
+                <p>Mar y Hierro 1K es mi laboratorio personal. Aquí documento mi proceso de recomposición corporal de 1000 días, aplicando la ciencia nutricional y la fisiología del deporte en mi propio cuerpo.</p>
+                <p>A los 47 años, decidí que la teoría no sirve de nada si no se aplica. Hoy soy el sujeto de prueba sometiendo la teoría al estrés del hierro y al frío del mar.</p>
+            </div>
+            <div style="margin-top: 20px; border-top: 1px solid var(--color-divider); padding-top: 15px;">
+                <h4 style="font-size: 1em; margin-bottom: 10px;">Evidencia y Social Media</h4>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <a href="https://www.youtube.com/YOUR_VIDEO_ID" target="_blank" style="color: var(--color-accent-blue);"><i class="fab fa-youtube fa-2x"></i></a>
+                    <a href="https://www.tiktok.com/@YOUR_TIKTOK_ID" target="_blank" style="color: var(--color-accent-blue);"><i class="fab fa-tiktok fa-2x"></i></a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
 </div>
 
@@ -187,7 +244,7 @@
     <div class="container">
         <span>© 2025 Mar y Hierro 1K | Desarrollado por Miguel Siña.</span>
         <div class="disclaimer">
-            **Descargo de responsabilidad:** El contenido de este sitio refleja mi experiencia personal y mi investigación como estudiante de nutrición. **No sustituye el asesoramiento médico profesional personalizado.**
+            Descargo de responsabilidad: El contenido de este sitio refleja mi experiencia personal y mi investigación como estudiante de nutrición. No sustituye el asesoramiento médico profesional personalizado.
         </div>
     </div>
 </footer>
@@ -229,7 +286,7 @@
         } else if (variableKey === 'musculoEsqueletico') {
             color = diff >= 0 ? 'var(--color-accent-pos)' : 'var(--color-accent-neg)';
         } else {
-            color = diff <= 0 ? 'var(--color-accent-pos)' : 'var(--color-progress)';
+            color = diff <= 0 ? 'var(--color-accent-pos)' : 'var(--color-text-subtle)';
         }
         
         return `<td style="color: ${color};">${diff > 0 ? '+' : ''}${diff.toFixed(1)}</td>`;
@@ -244,8 +301,15 @@
             return;
         }
         
-        document.querySelector('.header h3').innerHTML = `Día **${latestData.day} / 1000** | Fase 1: **Recomposición y Cimientos** (${latestData.date})`;
+        // Actualizar Cabecera de Progreso
+        const totalDays = 1000;
+        const currentDay = latestData.day;
+        const progressPercent = (currentDay / totalDays) * 100;
+        
+        document.getElementById('current-day-info').innerHTML = `Día ${currentDay} / ${totalDays} (${latestData.date})`;
+        document.getElementById('progress-bar-fill').style.width = `${progressPercent}%`;
 
+        // Actualizar Métricas Actuales
         const currentDataPoints = [
             latestData.peso.toFixed(1), latestData.grasaVisceral, latestData.grasaCorporal.toFixed(1), 
             latestData.musculoEsqueletico.toFixed(1), latestData.edadCorporal, latestData.mb, latestData.imc.toFixed(1)
@@ -253,14 +317,10 @@
         document.querySelectorAll('.current-data-grid strong').forEach((el, i) => { el.textContent = currentDataPoints[i]; });
 
         // Actualizar Hitos
-        document.querySelector('.milestone-list li:nth-child(2) i').className = latestData.peso < 92.0 ? 'fas fa-check-circle' : 'fas fa-times-circle';
-        document.querySelector('.milestone-list li:nth-child(2)').className = latestData.peso < 92.0 ? 'complete' : 'incomplete';
         document.querySelector('.milestone-list li:nth-child(2)').lastChild.textContent = ` Peso: < 92.0 kg (Actual: ${latestData.peso.toFixed(1)} kg)`;
-
-        document.querySelector('.milestone-list li:nth-child(3) i').className = latestData.grasaVisceral <= 14 ? 'fas fa-check-circle' : 'fas fa-times-circle';
-        document.querySelector('.milestone-list li:nth-child(3)').className = latestData.grasaVisceral <= 14 ? 'complete' : 'incomplete';
         document.querySelector('.milestone-list li:nth-child(3)').lastChild.textContent = ` Grasa Visceral: Nivel 13 o 14 (Actual: ${latestData.grasaVisceral})`;
         
+        // Tabla de Variación
         if (previousData) {
             const tableBody = document.querySelector('#variation-table tbody');
             tableBody.innerHTML = '';
@@ -292,11 +352,11 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { title: { display: true, text: 'Días de Progreso', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } },
-                    y: { title: { display: true, text: 'Valor', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } }
+                    x: { title: { display: true, text: 'Días de Progreso', color: var(--color-text) }, ticks: { color: var(--color-text-subtle) }, grid: { color: var(--color-divider) } },
+                    y: { title: { display: true, text: 'Valor', color: var(--color-text) }, ticks: { color: var(--color-text-subtle) }, grid: { color: var(--color-divider) } }
                 },
                 plugins: {
-                    legend: { labels: { color: 'var(--color-text)' } },
+                    legend: { labels: { color: var(--color-text) } },
                     tooltip: { 
                         callbacks: {
                             label: function(context) {
@@ -306,7 +366,7 @@
                                 return label;
                             }
                         },
-                        backgroundColor: 'rgba(0,0,0,0.7)', titleColor: 'var(--color-accent-pos)', bodyColor: 'var(--color-text)'
+                        backgroundColor: 'rgba(0,0,0,0.7)', titleColor: var(--color-accent-blue), bodyColor: 'white'
                     }
                 },
                 elements: { line: { tension: 0.4, borderWidth: 3 }, point: { radius: 5, hoverRadius: 7 } }
@@ -315,19 +375,19 @@
 
         new Chart(document.getElementById('pesoChart'), {
             ...chartConfigBase,
-            data: { labels: labels, datasets: [{ label: 'Peso Total (Kg)', data: historicalData.map(d => d.peso), borderColor: 'var(--color-progress)', backgroundColor: 'rgba(160, 174, 192, 0.2)', fill: true, }] }
+            data: { labels: labels, datasets: [{ label: 'Peso Total (Kg)', data: historicalData.map(d => d.peso), borderColor: var(--color-accent-blue), backgroundColor: 'rgba(147, 197, 253, 0.2)', fill: true, }] }
         });
 
         new Chart(document.getElementById('grasaVisceralChart'), {
             ...chartConfigBase,
-            data: { labels: labels, datasets: [{ label: 'Grasa Visceral (Nivel)', data: historicalData.map(d => d.grasaVisceral), borderColor: 'var(--color-accent-neg)', backgroundColor: 'rgba(255, 128, 66, 0.2)', fill: true, }] }
+            data: { labels: labels, datasets: [{ label: 'Grasa Visceral (Nivel)', data: historicalData.map(d => d.grasaVisceral), borderColor: var(--color-accent-neg), backgroundColor: 'rgba(252, 165, 165, 0.2)', fill: true, }] }
         });
 
         new Chart(document.getElementById('musculoGrasaChart'), {
             ...chartConfigBase,
             data: { labels: labels, datasets: [
-                    { label: 'Músculo Esquelético (%)', data: historicalData.map(d => d.musculoEsqueletico), borderColor: 'var(--color-accent-pos)', backgroundColor: 'rgba(0, 196, 159, 0.1)', fill: false, pointBackgroundColor: 'var(--color-accent-pos)' },
-                    { label: 'Grasa Corporal (%)', data: historicalData.map(d => d.grasaCorporal), borderColor: 'var(--color-accent-neg)', backgroundColor: 'rgba(255, 128, 66, 0.1)', fill: false, pointBackgroundColor: 'var(--color-accent-neg)' }
+                    { label: 'Músculo Esquelético (%)', data: historicalData.map(d => d.musculoEsqueletico), borderColor: var(--color-accent-pos), backgroundColor: 'rgba(110, 231, 183, 0.1)', fill: false, pointBackgroundColor: var(--color-accent-pos) },
+                    { label: 'Grasa Corporal (%)', data: historicalData.map(d => d.grasaCorporal), borderColor: var(--color-accent-neg), backgroundColor: 'rgba(252, 165, 165, 0.1)', fill: false, pointBackgroundColor: var(--color-accent-neg) }
                 ]
             }
         });
@@ -337,16 +397,16 @@
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Metabolismo Basal (Kcal)', data: historicalData.map(d => d.mb), borderColor: 'var(--color-progress)', backgroundColor: 'rgba(160, 174, 192, 0.1)', fill: false, yAxisID: 'yMb' },
-                    { label: 'Edad Corporal (Años)', data: historicalData.map(d => d.edadCorporal), borderColor: 'var(--color-accent-pos)', backgroundColor: 'rgba(0, 196, 159, 0.1)', fill: false, yAxisID: 'yEdad' }
+                    { label: 'Metabolismo Basal (Kcal)', data: historicalData.map(d => d.mb), borderColor: var(--color-text-subtle), backgroundColor: 'rgba(107, 114, 128, 0.1)', fill: false, yAxisID: 'yMb' },
+                    { label: 'Edad Corporal (Años)', data: historicalData.map(d => d.edadCorporal), borderColor: var(--color-accent-pos), backgroundColor: 'rgba(110, 231, 183, 0.1)', fill: false, yAxisID: 'yEdad' }
                 ]
             },
             options: {
                 ...chartConfigBase.options,
                 scales: {
                     x: chartConfigBase.options.scales.x,
-                    yMb: { type: 'linear', position: 'left', title: { display: true, text: 'Kcal', color: 'var(--color-text)' }, ticks: { color: 'var(--color-progress)' }, grid: { color: 'var(--color-divider)' } },
-                    yEdad: { type: 'linear', position: 'right', title: { display: true, text: 'Años', color: 'var(--color-text)' }, ticks: { color: 'var(--color-accent-pos)' }, grid: { drawOnChartArea: false } }
+                    yMb: { type: 'linear', position: 'left', title: { display: true, text: 'Kcal', color: var(--color-text) }, ticks: { color: var(--color-text-subtle) }, grid: { color: var(--color-divider) } },
+                    yEdad: { type: 'linear', position: 'right', title: { display: true, text: 'Años', color: var(--color-text) }, ticks: { color: var(--color-accent-pos) }, grid: { drawOnChartArea: false } }
                 }
             }
         });
