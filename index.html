@@ -133,7 +133,7 @@
                     <button class="btn-toggle" onclick="document.getElementById('tech-data').style.display = document.getElementById('tech-data').style.display === 'block' ? 'none' : 'block';">
                         <i class="fas fa-microscope"></i> Ver Detalles Técnicos
                     </button>
-                    <button class="btn-toggle" style="background-color: var(--color-accent-blue);" onclick="alert('INSTRUCCIONES DE ACTUALIZACIÓN:\n\n1. Ve a tu archivo index.html en GitHub.\n2. Busca // ZONA DE EDICIÓN DE DATOS (al final del código).\n3. Copia la última línea de datos, modifícala con tus nuevos números del día 168 (o el que corresponda) y pégala abajo.\n4. ¡Guarda y confirma los cambios (Commit)!');">
+                    <button class="btn-toggle" style="background-color: var(--color-accent-blue);" onclick="alert('INSTRUCCIONES DE ACTUALIZACIÓN:\n\n1. Ve a tu archivo index.html en GitHub.\n2. Busca // ZONA DE EDICIÓN DE DATOS (al final del código).\n3. Añade la nueva línea de datos con tu último control.\n4. ¡Guarda y confirma los cambios (Commit)!');">
                         <i class="fas fa-upload"></i> ¿Cómo Actualizo los Datos?
                     </button>
                 </div>
@@ -228,7 +228,7 @@
         </div>
 
         <p style="font-size: 0.9em; margin-bottom: 15px;">
-            Para ver tu video de TikTok, edita el archivo index.html y sustituye <strong>TU_USUARIO_TIKTOK</strong> en la línea 625 por el nombre de tu cuenta.
+            Para ver tu video de TikTok, edita el archivo index.html y sustituye <strong>TU_USUARIO_TIKTOK</strong> en el enlace del pie de página por el nombre de tu cuenta.
         </p>
 
         <div class="disclaimer">
@@ -341,11 +341,11 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { title: { display: true, text: 'Días de Progreso', color: getComputedStyle(document.documentElement).getPropertyValue('--color-text') }, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--color-text-subtle') }, grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--color-divider') } },
-                    y: { title: { display: true, text: 'Valor', color: getComputedStyle(document.documentElement).getPropertyValue('--color-text') }, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--color-text-subtle') }, grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--color-divider') } }
+                    x: { title: { display: true, text: 'Días de Progreso', color: getColor('--color-text') }, ticks: { color: getColor('--color-text-subtle') }, grid: { color: getColor('--color-divider') } },
+                    y: { title: { display: true, text: 'Valor', color: getColor('--color-text') }, ticks: { color: getColor('--color-text-subtle') }, grid: { color: getColor('--color-divider') } }
                 },
                 plugins: {
-                    legend: { labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--color-text') } },
+                    legend: { labels: { color: getColor('--color-text') } },
                     tooltip: { 
                         callbacks: {
                             label: function(context) {
@@ -355,7 +355,7 @@
                                 return label;
                             }
                         },
-                        backgroundColor: 'rgba(0,0,0,0.7)', titleColor: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-blue'), bodyColor: 'white'
+                        backgroundColor: 'rgba(0,0,0,0.7)', titleColor: getColor('--color-accent-blue'), bodyColor: 'white'
                     }
                 },
                 elements: { line: { tension: 0.4, borderWidth: 3 }, point: { radius: 5, hoverRadius: 7 } }
