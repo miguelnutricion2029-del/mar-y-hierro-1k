@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mar y Hierro 1K | Bio-Dashboard V17.5</title>
+    <title>Mar y Hierro 1K | Bio-Dashboard V17.7</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -141,7 +141,9 @@
         .ex-name { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
         .ex-target { font-size: 0.8rem; font-weight: 600; color: #3B82F6; background: #EFF6FF; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.02em; }
         .tag-warmup { font-size: 0.65rem; background: #FEF3C7; color: #D97706; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .ex-data-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; margin-top: 6px; }
+        
+        /* Ajuste de columnas para soportar 'lbs' o textos más largos */
+        .ex-data-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 1.5rem; margin-top: 6px; }
         .ex-col-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
         .ex-prev-val { font-size: 0.9rem; color: var(--text-secondary); font-family: monospace; display: flex; align-items: center; gap: 6px; }
         .ex-curr-val { font-size: 0.95rem; color: var(--text-primary); font-weight: 600; font-family: monospace; }
@@ -254,7 +256,7 @@
     </div>
 
     <footer>
-        N=1 Project | Scientific Minimalism V17.5
+        N=1 Project | Scientific Minimalism V17.7
     </footer>
 </div>
 
@@ -373,12 +375,11 @@
     ];
 
     // ==========================================
-    // 4. BITÁCORA DIARIA (CON TUS DATOS REALES)
+    // 4. BITÁCORA DIARIA
     // ==========================================
     // [!!! ALERTA PARA LA IA !!!]
     // NO CAMBIAR LOS DATOS DE 'WORKOUT_LOG' BAJO NINGUNA CIRCUNSTANCIA.
-    // SI EL USUARIO PIDE CAMBIOS DE CÓDIGO, COPIAR ESTA SECCIÓN EXACTAMENTE COMO ESTÁ.
-    // LOS DATOS SON REALES Y DEL USUARIO.
+    // LOS DATOS SON REALES Y DEL USUARIO. COPIAR EXACTAMENTE.
     
     const WORKOUT_LOG = [
         // --- Referencia Pasada (Mar) ---
@@ -391,7 +392,7 @@
         },
 
         // --- HOY: DÍA 162 (Mar Técnica) ---
-        // DATOS REALES DEL USUARIO - NO TOCAR
+        // DATOS REALES RESTAURADOS
         { 
             day: 162, 
             type: 'mar', 
@@ -641,8 +642,7 @@
 
         const template = WORKOUT_TEMPLATES[cycleData.key];
         const todayLog = WORKOUT_LOG.find(l => l.day === day);
-        const historyLog = WORKOUT_LOG.filter(l => l.type === cycleData.key && l.day < day).sort((a,b) => b.day - a.day)[0];
-
+        
         let colorClass = 'bg-gym';
         let borderClass = 'border-gym';
         let titleOverride = template.title;
@@ -662,6 +662,8 @@
         `;
 
         if (template.type === 'gym') {
+            const historyLog = WORKOUT_LOG.filter(l => l.type === cycleData.key && l.day < day).sort((a,b) => b.day - a.day)[0];
+            
             html += `<div class="ex-list">`;
             template.exercises.forEach(ex => {
                 let prevData = { w: '-', s: '-' };
