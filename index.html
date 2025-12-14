@@ -3,37 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mar y Hierro 1K | Bio-Dashboard V17.7</title>
+    <title>Mar y Hierro 1K | Dashboard V26</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* --- 1. SISTEMA DE DISEÑO (SCIENTIFIC MINIMALISM) --- */
+        /* --- 1. SISTEMA DE DISEÑO --- */
         :root {
             --bg-body: #FAFAFA;
             --bg-card: #FFFFFF;
-            --border-subtle: #E4E4E7;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
             
-            --font-main: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            --text-primary: #18181B;
-            --text-secondary: #71717A;
+            --text-primary: #18181B;   
+            --text-secondary: #71717A; 
             
-            /* Estados de Fase */
-            --status-active: #3B82F6; 
-            --status-done: #10B981;   
-            --status-wait: #E4E4E7;   
+            /* Colores de Fase (Preservados para el color del Día) */
+            --p1-blue: #3B82F6;
+            --p2-green: #10B981;
+            --p3-amber: #F59E0B;
+            --p4-red: #EF4444;
+
+            --radius: 12px;
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             
-            /* Semántica de Datos */
+            /* Tendencias */
             --trend-good: #10B981;
             --trend-bad: #EF4444;
-            --trend-neutral: #A1A1AA;
-
-            /* Tipos de Entrenamiento */
-            --type-mar: #0EA5E9; 
-            --type-gym: #18181B; 
-            --type-mob: #F59E0B; 
-            
-            --radius: 12px;
-            --shadow: 0 2px 4px rgba(0,0,0,0.03);
+            --bg-good: #ECFDF5;
+            --bg-bad: #FEF2F2;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,816 +38,341 @@
             font-family: var(--font-main);
             background-color: var(--bg-body);
             color: var(--text-primary);
-            padding: 2rem;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
+            padding: 3rem 2rem;
+            display: flex;
+            justify-content: center;
         }
 
-        .wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 2.5rem; }
+        .wrapper { 
+            width: 100%;
+            max-width: 1100px;
+            display: flex; 
+            flex-direction: column; 
+            gap: 3rem; /* Espaciado ajustado tras quitar la barra */
+        }
 
-        /* --- HEADER --- */
+        /* --- 2. ENCABEZADO (INTACTO) --- */
         header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-end;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(0,0,0,0.05);
         }
-        .header-left h1 { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.03em; }
-        .header-left h2 { font-size: 1rem; color: var(--text-secondary); font-weight: 400; margin-top: 6px; }
-        .header-right { display: flex; flex-direction: column; align-items: flex-end; }
-        .day-display { font-size: 2.5rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -1px; color: var(--text-primary); }
-        .date-display { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-top: 4px; }
 
-        /* --- PROGRESS BAR --- */
-        .progress-track { display: flex; gap: 4px; height: 8px; width: 100%; margin-top: -15px; }
-        .phase-seg { 
-            height: 100%; 
-            background: var(--status-wait); 
-            flex-grow: 1; 
-            border-radius: 2px; 
-            transition: opacity 0.2s; 
-            cursor: pointer; 
-            position: relative;
+        .header-left { margin-bottom: 4px; }
+        .header-left h1 { 
+            font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; text-transform: uppercase;
+            color: var(--text-primary); margin-bottom: 6px; line-height: 1;
         }
-        .phase-seg.done { background: var(--status-done); }
-        .phase-seg.active { background: var(--status-active); }
-        .phase-seg:hover { opacity: 0.7; }
-
-        /* --- BIO-TOOLTIP --- */
-        .bio-tooltip {
-            position: fixed;
-            background: #27272A; 
-            color: #FFFFFF;
-            border: 1px solid #3F3F46; 
-            padding: 12px 16px;
-            border-radius: 8px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-            pointer-events: none;
-            z-index: 1000;
-            font-size: 0.85rem;
-            opacity: 0;
-            transition: opacity 0.15s ease;
-            transform: translate(-50%, -100%);
-            margin-top: -14px;
-            min-width: 160px;
-            text-align: center;
+        .header-left h2 { 
+            font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; 
         }
-        .tooltip-title { font-weight: 700; color: #FFFFFF; margin-bottom: 4px; font-size: 0.9rem; }
-        .tooltip-status { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-        .tooltip-range { font-size: 0.75rem; color: #A1A1AA; font-family: monospace; }
 
-        /* --- LAYOUT --- */
-        .layout-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr; 
-            gap: 2.5rem;
-            align-items: start;
-        }
-        @media (max-width: 1024px) { .layout-grid { grid-template-columns: 1fr; } }
-
-        /* --- COLUMNA IZQUIERDA --- */
-        .main-col { display: flex; flex-direction: column; gap: 2rem; }
-        .card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
-        .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1.2rem; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
-        .chart-stack { display: flex; flex-direction: column; gap: 2rem; }
-        .chart-box { position: relative; height: 280px; width: 100%; }
-        .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr; } }
-        .kpi-item { display: flex; flex-direction: column; justify-content: space-between; height: 100%; min-height: 120px; }
-        .kpi-val { font-size: 2.2rem; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; margin: 8px 0; line-height: 1; }
-        .kpi-sub { font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; font-weight: 500; }
-        .delta { font-weight: 700; }
-
-        /* --- COLUMNA DERECHA --- */
-        .sidebar-col { display: flex; flex-direction: column; gap: 1.5rem; min-height: 100%; }
-        .wo-header {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
-            padding-bottom: 1rem; border-bottom: 2px solid var(--border-subtle);
-        }
-        .wo-type-tag {
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-            padding: 4px 10px; border-radius: 4px; color: #fff;
-        }
-        .wo-cycle-day { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
-
-        /* Lista Gym - HOY */
-        .ex-list { display: flex; flex-direction: column; gap: 1.2rem; }
-        .ex-item { display: flex; flex-direction: column; gap: 6px; padding-bottom: 1.2rem; border-bottom: 1px dashed var(--border-subtle); }
-        .ex-item:last-child { border-bottom: none; }
-        .ex-header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .ex-name-group { display: flex; align-items: center; gap: 8px; }
-        .ex-name { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
-        .ex-target { font-size: 0.8rem; font-weight: 600; color: #3B82F6; background: #EFF6FF; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.02em; }
-        .tag-warmup { font-size: 0.65rem; background: #FEF3C7; color: #D97706; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .header-right { text-align: right; }
         
-        /* Ajuste de columnas para soportar 'lbs' o textos más largos */
-        .ex-data-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 1.5rem; margin-top: 6px; }
-        .ex-col-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-        .ex-prev-val { font-size: 0.9rem; color: var(--text-secondary); font-family: monospace; display: flex; align-items: center; gap: 6px; }
-        .ex-curr-val { font-size: 0.95rem; color: var(--text-primary); font-weight: 600; font-family: monospace; }
-        .stat-pill { background: #F4F4F5; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; }
-        
-        .big-metric { font-size: 4rem; font-weight: 800; letter-spacing: -2px; line-height: 1; margin: 1.5rem 0; }
-        .mob-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; background: #FAFAFA; padding: 15px; border-radius: 8px; margin-top: 1rem; }
-        .mob-box { text-align: center; }
-        .mob-val { font-weight: 700; font-size: 1.2rem; }
-        .mob-lbl { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; }
-        
-        .notes-block { font-size: 0.9rem; color: var(--text-secondary); font-style: italic; line-height: 1.6; background: #FBFBFB; padding: 12px; border-radius: 6px; margin-top: 8px; border-left: 3px solid var(--border-subtle); }
-        .prev-notes-block { font-size: 0.8rem; color: #A1A1AA; font-style: italic; margin-bottom: 4px; padding-left: 4px; border-left: 2px solid #E4E4E7; }
-
-        /* Mob Group Titles */
-        .mob-group-title {
-            font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; 
-            color: var(--type-mob); margin-top: 1rem; margin-bottom: 0.5rem; padding-bottom: 4px;
-            border-bottom: 2px solid #FEF3C7;
+        .project-day-label { 
+            font-size: 3.5rem; font-weight: 800; line-height: 0.9; letter-spacing: -2px; 
+            transition: color 0.3s ease;
         }
-        .mob-item { display: flex; flex-direction: column; gap: 4px; padding-bottom: 8px; border-bottom: 1px dashed #F4F4F5; }
-        .mob-row-top { display: flex; justify-content: space-between; align-items: baseline; }
-        .mob-focus { font-size: 0.75rem; color: var(--text-secondary); font-style: italic; line-height: 1.3; }
+        
+        .date-time-group {
+            margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;
+        }
+        .mono-clock { font-family: monospace; margin-left: 8px; opacity: 0.8; }
 
-        /* --- NEXT SESSIONS --- */
-        .next-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 0.5rem; }
-        .next-card {
+        /* --- 3. GRÁFICOS --- */
+        .chart-section { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 2rem; 
+            width: 100%;
+        }
+        @media (max-width: 850px) { .chart-section { grid-template-columns: 1fr; } }
+        
+        .chart-card {
             background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
             border-radius: var(--radius);
-            padding: 1.2rem;
-            display: flex; flex-direction: column; gap: 10px;
-            position: relative; overflow: hidden;
-            box-shadow: var(--shadow);
-            height: 100%;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid rgba(0,0,0,0.03);
+            min-width: 0; 
         }
-        .next-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: currentColor; }
-        
-        .next-header-group { display: flex; flex-direction: column; gap: 2px; border-bottom: 1px solid #F4F4F5; padding-bottom: 8px; margin-bottom: 4px; }
-        .next-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 600; }
-        .next-title { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
-        
-        .mini-list { display: flex; flex-direction: column; gap: 6px; }
-        .mini-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-secondary); }
-        .mini-name { font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 85%; }
-        .mini-target { font-family: monospace; color: #3B82F6; background: #EFF6FF; padding: 1px 4px; border-radius: 3px; font-size: 0.7rem; }
-        .mini-note { font-style: italic; font-size: 0.75rem; color: var(--text-secondary); }
 
-        /* Colores dinámicos */
-        .border-mar { border-color: var(--type-mar) !important; color: var(--type-mar); }
-        .bg-mar { background-color: var(--type-mar); }
-        .text-mar { color: var(--type-mar); }
+        .section-title {
+            font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); 
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;
+        }
         
-        .border-gym { border-color: var(--type-gym) !important; color: var(--type-gym); }
-        .bg-gym { background-color: var(--type-gym); }
-        .text-gym { color: var(--type-gym); }
+        .chart-box { height: 260px; width: 100%; position: relative; }
+
+        /* --- 4. GRID DE TARJETAS --- */
+        .kpi-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 1.5rem; 
+            width: 100%;
+        }
+        @media (max-width: 1000px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .card { 
+            background: var(--bg-card); 
+            border-radius: var(--radius); 
+            padding: 1.5rem; 
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 120px;
+        }
         
-        .border-mob { border-color: var(--type-mob) !important; color: var(--type-mob); }
-        .bg-mob { background-color: var(--type-mob); }
-        .text-mob { color: var(--type-mob); }
+        .card-label { 
+            font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); 
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        
+        .kpi-val { font-size: 1.8rem; font-weight: 800; color: var(--text-primary); letter-spacing: -1px; }
+        .kpi-unit { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; margin-left: 2px; }
+        
+        .delta-tag { 
+            align-self: flex-start; display: inline-flex; align-items: center;
+            font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-top: auto;
+        }
 
-        footer { margin-top: 4rem; text-align: center; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.7; }
-
+        footer { 
+            text-align: center; margin-top: 2rem; padding-top: 2rem;
+            font-size: 0.75rem; color: var(--text-secondary); opacity: 0.6;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
-
-<div id="bio-tooltip" class="bio-tooltip">
-    <div id="tt-title" class="tooltip-title"></div>
-    <div id="tt-status" class="tooltip-status"></div>
-    <div id="tt-range" class="tooltip-range"></div>
-</div>
 
 <div class="wrapper">
     
     <header>
         <div class="header-left">
             <h1>Mar y Hierro 1K</h1>
-            <h2>Bio-datos y Estrategia nutricional</h2>
+            <h2>Estrategia nutricional de recomposición</h2>
         </div>
         <div class="header-right">
-            <span id="day-number" class="day-display">--</span>
-            <div id="date-current" class="date-display">--</div>
+            <div id="day-counter" class="project-day-label">DÍA --</div>
+            <div class="date-time-group">
+                <span id="date-display">--</span>
+                <span id="clock-display" class="mono-clock">--:--:--</span>
+            </div>
         </div>
     </header>
 
-    <div id="progress-container" class="progress-track"></div>
-
-    <div class="layout-grid">
-        
-        <main class="main-col">
-            <div class="chart-stack">
-                <div class="card">
-                    <div class="card-title">Tendencia de Peso</div>
-                    <div class="chart-box"><canvas id="chartWeight"></canvas></div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Composición Corporal</div>
-                    <div class="chart-box"><canvas id="chartComp"></canvas></div>
-                </div>
-            </div>
-            <div class="kpi-grid" id="kpi-container"></div>
-        </main>
-
-        <aside class="sidebar-col">
-            <div id="workout-card-container"></div>
-            <div id="next-sessions-container" class="next-row"></div>
-        </aside>
-
+    <div class="chart-section">
+        <div class="chart-card">
+            <div class="section-title">Tendencia de peso</div>
+            <div class="chart-box"><canvas id="chartWeight"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <div class="section-title">Composición corporal</div>
+            <div class="chart-box"><canvas id="chartComp"></canvas></div>
+        </div>
     </div>
 
-    <footer>
-        N=1 Project | Scientific Minimalism V17.7
-    </footer>
+    <div class="kpi-grid" id="kpi-container"></div>
+
+    <footer>Scientific Minimalism V26 | Clean Layout</footer>
 </div>
 
 <script>
-    // ==========================================
-    // 1. CONFIGURACIÓN
-    // ==========================================
+    // ================= CONFIGURACIÓN =================
     const CONFIG = {
-        birthDate: '1978-02-17',
-        heightCm: 173,
-        projectStart: '2025-07-01',
+        startDate: '2025-07-01T00:00:00',
         totalDays: 1000,
+        heightCm: 173,
+        // Mantenemos las fases SOLO para colorear el número del día
         phases: [
-            { end: 400, name: "Recomposición" },
-            { end: 650, name: "Fuerza Absoluta" },
-            { end: 850, name: "Dominio Corporal" },
-            { end: 1000, name: "Ultra-Resistencia" }
+            { end: 400,  color: "#3B82F6" },
+            { end: 650,  color: "#10B981" },
+            { end: 850,  color: "#F59E0B" },
+            { end: 1000, color: "#EF4444" }
         ]
     };
 
-    // ==========================================
-    // 2. DATOS BIO
-    // ==========================================
+    // ================= DATOS ACTUALIZADOS =================
     const BODY_DATA = [
-        { d: '2024-12-01', w: 109.0, f: 38.0, m: 27.0, v: 21, bmr: 2500, age: 78 },
-        { d: '2025-11-16', w: 103.3, f: 36.3, m: 29.0, v: 19, bmr: 2024, age: 72 },
-        { d: '2025-12-01', w: 100.6, f: 33.6, m: 29.7, v: 18, bmr: 1989, age: 70 },
+        { d: '2025-11-25', w: 103.3, f: 36.3, m: 29.0, v: 19, ba: 72, i: 34.5, bmr: 2024 },
+        { d: '2025-12-05', w: 100.6, f: 35.1, m: 29.7, v: 18, ba: 70, i: 33.6, bmr: 1990 },
+        { d: '2025-12-14', w: 97.2,  f: 34.4, m: 30.0, v: 17, ba: 68, i: 32.5, bmr: 1944 }
     ];
 
-    // ==========================================
-    // 3. RUTINAS
-    // ==========================================
-    const WORKOUT_TEMPLATES = {
-        mar: { type: 'mar', title: 'Entrenamiento Mar' },
-        mar_full: { type: 'mar', title: 'Entrenamiento en Mar' },
-        mob: { 
-            type: 'mob', 
-            title: 'Movilidad & Caminata',
-            exercises: [
-                { group: '1. Tobillo y Pie', name: 'Tibiales en Pared', set: '25 reps', focus: 'Activa tibial anterior para dorsiflexión' },
-                { group: '1. Tobillo y Pie', name: 'Elevación Talones FHL', set: '20 reps', focus: 'Fortalece arco plantar y dedo gordo' },
-                { group: '1. Tobillo y Pie', name: 'Knee to Wall (Dinámico)', set: '12 / lado', focus: 'Tocar pared sin levantar talón' },
-                
-                { group: '2. Cadera Dinámica', name: 'Patadas Frontales', set: '10 / lado', focus: 'Elongación balística controlada' },
-                { group: '2. Cadera Dinámica', name: 'Patadas Laterales', set: '10 / lado', focus: 'Apertura dinámica aductores' },
-                { group: '2. Cadera Dinámica', name: 'Movilidad 90/90', set: '10 giros', focus: 'Rotación int/ext para lubricar cápsula' },
-
-                { group: '3. Activación Glúteo', name: 'Puente de Glúteo', set: '20 reps', focus: 'Aprieta arriba 1 seg' },
-                { group: '3. Activación Glúteo', name: 'Almejas (Clamshell)', set: '15 / lado', focus: 'Glúteo medio (prevenir valgo)' },
-                { group: '3. Activación Glúteo', name: 'Step-Down Lateral', set: '12 / lado', focus: 'Control excéntrico y alineación' },
-
-                { group: '4. Núcleo (McGill Big 3)', name: 'McGill Curl-Up', set: '5x10s / lado', focus: 'Tensión máx 10s, relaja 2s. No doblar cuello' },
-                { group: '4. Núcleo (McGill Big 3)', name: 'Plancha Lateral', set: '3x10s / lado', focus: 'Empujar suelo con el codo' },
-                { group: '4. Núcleo (McGill Big 3)', name: 'Bird-Dog', set: '6 / lado', focus: 'Patrón cruzado. Pausa 3s en extensión' },
-
-                { group: '5. Torácica y Enlace', name: 'Gato - Vaca', set: '10 ciclos', focus: 'Movilidad segmentaria vertebral' },
-                { group: '5. Torácica y Enlace', name: 'Rezo en Banco', set: '2 x 40s', focus: 'Extensión torácica y dorsales' },
-                { group: '5. Torácica y Enlace', name: 'Wall Slides Sentado', set: '12 lentas', focus: 'Trapecio inferior y rotadores ext.' },
-                { group: '5. Torácica y Enlace', name: 'World\'s Greatest Stretch', set: '5 / lado', focus: 'Flujo completo: Zancada -> Rotación' },
-
-                { group: '6. Integración', name: 'Sentadilla Asistida (Hold)', set: '1 min', focus: 'Isometría en fondo del squat' },
-                { group: '6. Integración', name: 'Goblet Squat', set: '1x10', focus: 'Activa core reflexivo, marca patrón' }
-            ]
-        },
-        gym_a: {
-            type: 'gym',
-            title: 'Rutina A: Empuje',
-            exercises: [
-                { id: 'face_pull_uni', name: 'Face Pull Unilateral', target: '2x15', type: 'warmup' },
-                { id: 'goblet', name: 'Goblet Squat (Talones)', target: '3x10-12' },
-                { id: 'bench', name: 'Press Banca (Barra)', target: '3x6-8' },
-                { id: 'mach_row', name: 'Remo Máquina', target: '3x10-12' },
-                { id: 'leg_curl', name: 'Curl Femoral', target: '3x10-12' },
-                { id: 'leg_raise', name: 'Hanging Leg Raises', target: '3x5-10' },
-                { id: 'hollow_hold', name: 'Hollow Body HOLD', target: '3x45s' }
-            ]
-        },
-        gym_b: {
-            type: 'gym',
-            title: 'Rutina B: Tirón',
-            exercises: [
-                { id: 'face_pull_uni', name: 'Face Pull Unilateral', target: '2x15', type: 'warmup' },
-                { id: 'hip_thrust', name: 'Hip Thrust Máquina', target: '3x10-12' },
-                { id: 'inc_db_press', name: 'Press Inclinado (Manc)', target: '3x8-10' },
-                { id: 'lat_pull', name: 'Jalón al Pecho (Polea)', target: '3x8-10' },
-                { id: 'lat_raise', name: 'Elevaciones Laterales', target: '3x12-15' },
-                { id: 'hollow_tuck', name: 'Hollow Body TUCKS', target: '3x12-15' }
-            ]
-        },
-        gym_c: {
-            type: 'gym',
-            title: 'Rutina C: Full Body',
-            exercises: [
-                { id: 'face_pull_uni', name: 'Face Pull Unilateral', target: '2x15', type: 'warmup' },
-                { id: 'leg_press', name: 'Prensa de Piernas', target: '3x10-12' },
-                { id: 'push_up', name: 'Push Ups', target: '3 x Fallo' },
-                { id: 'pull_up_asst', name: 'Dominadas Asistidas', target: '3x8-10' },
-                { id: 'face_pull_hvy', name: 'Face Pulls Pesados', target: '3x15' },
-                { id: 'calves', name: 'Tibiales + Gemelos', target: '2x15-20' },
-                { id: 'capt_chair', name: 'Silla del Capitán', target: '3x10-15' }
-            ]
-        }
-    };
-
-    const CYCLE_MAP = [
-        null, 
-        { key: 'mar', sub: 'Volumen' },   
-        { key: 'gym_a', sub: 'Fuerza' },  
-        { key: 'mob', sub: 'Recup' },     
-        { key: 'mar', sub: 'Técnica' },   
-        { key: 'gym_b', sub: 'Hiper' },   
-        { key: 'mob', sub: 'Recup' },     
-        { key: 'mar', sub: 'Velocidad' }, 
-        { key: 'gym_c', sub: 'Mixto' },   
-        { key: 'mob', sub: 'Recup' }      
-    ];
-
-    // ==========================================
-    // 4. BITÁCORA DIARIA
-    // ==========================================
-    // [!!! ALERTA PARA LA IA !!!]
-    // NO CAMBIAR LOS DATOS DE 'WORKOUT_LOG' BAJO NINGUNA CIRCUNSTANCIA.
-    // LOS DATOS SON REALES Y DEL USUARIO. COPIAR EXACTAMENTE.
-    
-    const WORKOUT_LOG = [
-        // --- Referencia Pasada (Mar) ---
-        { 
-            day: 153, 
-            type: 'mar', 
-            dist: 2.5,        
-            time: '45m',   
-            notes: 'Mejorar el rolido y seguir practicando la respiración bilateral'
-        },
-
-        // --- HOY: DÍA 162 (Mar Técnica) ---
-        // DATOS REALES RESTAURADOS
-        { 
-            day: 162, 
-            type: 'mar', 
-            dist: 1.8,        
-            time: '40m',   
-            notes: 'Mejorar el rolido y seguir practicando la respiración bilateral'
-        },
-
-        // --- MAÑANA: DÍA 163 (Gym B) ---
-        {
-            day: 163,
-            type: 'gym_b',
-            data: [
-                { e: 'face_pull_uni', w: '', s: '', n: '' },
-                { e: 'hip_thrust',    w: '', s: '', n: '' },
-                { e: 'inc_db_press',  w: '', s: '', n: '' },
-                { e: 'lat_pull',      w: '', s: '', n: '' },
-                { e: 'lat_raise',     w: '', s: '', n: '' },
-                { e: 'hollow_tuck',   w: '', s: '', n: '' }
-            ]
-        },
-
-        // --- DÍA 164 (Mobility) ---
-        {
-            day: 164,
-            type: 'mob',
-            tread: { t: '', i: '', d: '' },
-            notes: ''
-        },
-
-        // --- DÍA 165 (Mar Velocidad) ---
-        {
-            day: 165,
-            type: 'mar',
-            dist: 0.0,
-            time: '',
-            notes: ''
-        },
-
-        // --- DÍA 166 (Gym C) ---
-        {
-            day: 166,
-            type: 'gym_c',
-            data: [
-                { e: 'face_pull_uni', w: '', s: '', n: '' },
-                { e: 'leg_press',     w: '', s: '', n: '' },
-                { e: 'push_up',       w: '', s: '', n: '' },
-                { e: 'pull_up_asst',  w: '', s: '', n: '' },
-                { e: 'face_pull_hvy', w: '', s: '', n: '' },
-                { e: 'calves',        w: '', s: '', n: '' },
-                { e: 'capt_chair',    w: '', s: '', n: '' }
-            ]
-        },
-
-        // --- DÍA 167 (Mobility) ---
-        {
-            day: 167,
-            type: 'mob',
-            tread: { t: '', i: '', d: '' },
-            notes: ''
-        }
-    ];
-
-    // ==========================================
-    // LÓGICA
-    // ==========================================
+    // ================= LÓGICA =================
     function init() {
-        const now = new Date('2025-12-09T00:00:00'); 
-        const start = new Date(CONFIG.projectStart + 'T00:00:00');
-        const diffTime = now.getTime() - start.getTime();
-        let currentDay = Math.floor(diffTime / (1000 * 3600 * 24)) + 1;
-        if(currentDay < 1) currentDay = 1; 
-
-        const daynumEl = document.getElementById('day-number');
-        daynumEl.innerText = currentDay;
-        document.getElementById('date-current').innerText = now.toLocaleDateString('es-ES', { 
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-        });
-
-        const activeColor = renderProgressAndGetColor(currentDay);
-        daynumEl.style.color = activeColor;
-
-        if (BODY_DATA.length > 0) {
-            renderKPIs(BODY_DATA);
-            renderCharts(BODY_DATA);
-        }
-
-        renderWorkoutCard(currentDay);
-        renderNextSessions(currentDay);
+        renderKPIs();
+        renderCharts();
+        updateTimeLoop();
     }
 
-    function renderProgressAndGetColor(day) {
-        const container = document.getElementById('progress-container');
-        const tooltip = document.getElementById('bio-tooltip');
-        const ttTitle = document.getElementById('tt-title');
-        const ttStatus = document.getElementById('tt-status');
-        const ttRange = document.getElementById('tt-range');
+    function updateTimeLoop() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        const dateStr = now.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+        document.getElementById('clock-display').innerText = timeStr;
+        document.getElementById('date-display').innerText = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
 
+        const start = new Date(CONFIG.startDate);
+        const diff = now - start;
+        const currentDay = Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
+        const dayEl = document.getElementById('day-counter');
+        dayEl.innerText = currentDay > 0 ? `DÍA ${currentDay}` : `T-${Math.abs(currentDay)}`;
+
+        // Lógica de color del día (Header)
+        let activeColor = "var(--text-primary)";
         let prevEnd = 0;
-        let currentColor = getComputedStyle(document.documentElement).getPropertyValue('--status-wait').trim();
+        for (let phase of CONFIG.phases) {
+            if (currentDay > prevEnd && currentDay <= phase.end) {
+                activeColor = phase.color;
+                break;
+            }
+            prevEnd = phase.end;
+        }
+        
+        if (currentDay > 0 && currentDay <= CONFIG.totalDays) {
+            dayEl.style.color = activeColor;
+        } else {
+            dayEl.style.color = "var(--text-primary)";
+        }
 
-        CONFIG.phases.forEach(phase => {
-            const duration = phase.end - prevEnd;
-            const pct = (duration / CONFIG.totalDays) * 100;
-            const el = document.createElement('div');
-            el.className = 'phase-seg';
-            el.style.width = `${pct}%`;
+        requestAnimationFrame(updateTimeLoop);
+    }
 
-            let statusText = "Pendiente";
-            let statusColor = "#A1A1AA"; 
+    function renderKPIs() {
+        const cur = BODY_DATA[BODY_DATA.length - 1];
+        const prev = BODY_DATA[BODY_DATA.length - 2];
+
+        const metrics = [
+            { l:'Peso Total',     v: cur.w,   u:'kg',   d: (cur.w - prev.w).toFixed(1),   inv: true },
+            { l:'IMC',            v: cur.i,   u:'',     d: (cur.i - prev.i).toFixed(1),   inv: true },
+            { l:'Grasa Corp.',    v: cur.f,   u:'%',    d: (cur.f - prev.f).toFixed(1),   inv: true },
+            { l:'Músculo Esq.',   v: cur.m,   u:'%',    d: (cur.m - prev.m).toFixed(1),   inv: false },
+            { l:'Grasa Visceral', v: cur.v,   u:'Nvl',  d: (cur.v - prev.v).toFixed(0),   inv: true },
+            { l:'Edad Corp.',     v: cur.ba,  u:'Años', d: (cur.ba - prev.ba).toFixed(0), inv: true },
+            { l:'Metabolismo',    v: cur.bmr, u:'Kcal', d: (cur.bmr - prev.bmr).toFixed(0), inv: false }
+        ];
+
+        let html = '';
+        metrics.forEach(m => {
+            const valDelta = parseFloat(m.d);
+            const isPos = valDelta > 0;
+            const isZero = valDelta === 0;
             
-            if (day > phase.end) {
-                el.classList.add('done');
-                statusText = "Completada";
-                statusColor = "#10B981";
-            } else if (day > prevEnd && day <= phase.end) {
-                el.classList.add('active');
-                statusText = "En Progreso";
-                statusColor = "#3B82F6";
-                currentColor = getComputedStyle(document.documentElement).getPropertyValue('--status-active').trim();
+            let color = '#A1A1AA';
+            let bg = '#F4F4F5';
+            
+            if (!isZero) {
+                const isGood = m.inv ? !isPos : isPos;
+                color = isGood ? 'var(--trend-good)' : 'var(--trend-bad)';
+                bg = isGood ? 'var(--bg-good)' : 'var(--bg-bad)';
             }
 
-            const startDay = prevEnd + 1;
+            const arrow = isZero ? '-' : (isPos ? '▲' : '▼');
+            const deltaStr = isZero ? '-' : `${arrow} ${Math.abs(valDelta)}`;
 
-            el.addEventListener('mousemove', (e) => {
-                tooltip.style.opacity = '1';
-                tooltip.style.left = e.clientX + 'px';
-                tooltip.style.top = e.clientY + 'px';
-                ttTitle.innerText = phase.name;
-                ttStatus.innerText = statusText;
-                ttStatus.style.color = statusColor;
-                ttRange.innerText = `Días ${startDay} - ${phase.end}`;
-            });
-
-            el.addEventListener('mouseleave', () => {
-                tooltip.style.opacity = '0';
-            });
-
-            container.appendChild(el);
-            prevEnd = phase.end;
-        });
-        return currentColor;
-    }
-
-    function renderKPIs(data) {
-        const cur = data[data.length - 1];
-        const prev = data.length > 1 ? data[data.length - 2] : cur;
-        const realAge = calculateRealAge();
-        const hM = CONFIG.heightCm / 100;
-        const imcVal = (cur.w / (hM * hM)).toFixed(1);
-        const imcPrev = (prev.w / (hM * hM)).toFixed(1);
-        const bioAgeDiff = cur.age - realAge;
-        const bioSign = bioAgeDiff > 0 ? '+' : '';
-        const bioColor = bioAgeDiff > 0 ? 'var(--trend-bad)' : 'var(--trend-good)';
-
-        const getVar = (now, old, inverse=false) => {
-            const diff = (now - old).toFixed(1);
-            if(diff == 0) return `<span style="color:var(--trend-neutral)">—</span>`;
-            const isGood = inverse ? diff < 0 : diff > 0;
-            const color = isGood ? 'var(--trend-good)' : 'var(--trend-bad)';
-            const arrow = diff > 0 ? '▲' : '▼';
-            return `<span class="delta" style="color:${color}">${arrow} ${Math.abs(diff)}</span>`;
-        };
-        const cards = [
-            { label: 'IMC', val: imcVal, unit: '', sub: `Real: ${(cur.w).toFixed(1)}kg`, extra: getVar(imcVal, imcPrev, true) },
-            { label: 'Grasa Visceral', val: cur.v, unit: '', sub: 'Nivel', extra: getVar(cur.v, prev.v, true) },
-            { label: 'Edad Metabólica', val: cur.age, unit: 'años', sub: `Real: ${realAge} (<span style="color:${bioColor}; font-weight:700;">${bioSign}${bioAgeDiff}</span>)`, extra: '' },
-            { label: 'Metabolismo', val: cur.bmr, unit: 'kcal', sub: 'Basal', extra: getVar(cur.bmr, prev.bmr, false) }
-        ];
-        let html = '';
-        cards.forEach(c => {
             html += `
-                <div class="card kpi-item">
-                    <div class="card-title">${c.label}</div>
-                    <div class="kpi-val">${c.val} <span style="font-size:1.1rem; color:#A1A1AA; font-weight:500;">${c.unit}</span></div>
-                    <div class="kpi-sub">${c.sub} ${c.extra ? '&nbsp;&nbsp;' + c.extra : ''}</div>
+                <div class="card">
+                    <div class="card-label">${m.l}</div>
+                    <div>
+                        <span class="kpi-val">${m.v}</span><span class="kpi-unit">${m.u}</span>
+                    </div>
+                    <div class="delta-tag" style="color:${color}; background:${bg}">
+                        ${deltaStr}
+                    </div>
                 </div>`;
         });
         document.getElementById('kpi-container').innerHTML = html;
     }
 
-    function renderCharts(rawData) {
-        const data = rawData.slice(-15);
-        const labels = data.map(d => new Date(d.d).toLocaleDateString('es-ES',{day:'numeric', month:'short'}));
-        const fontStack = "Inter, system-ui, sans-serif";
-        const gridColor = '#F4F4F5';
-        const textColor = '#A1A1AA';
+    // --- FUNCIÓN TOOLTIP PERSONALIZADA ---
+    function customTooltipLabel(context) {
+        let label = context.dataset.label || '';
+        if (label) label += ': ';
+        
+        const currentVal = context.parsed.y;
+        label += currentVal;
+
+        if (context.chart.canvas.id === 'chartWeight') label += ' kg';
+        else label += '%';
+
+        const dataIndex = context.dataIndex;
+        const dataset = context.dataset.data;
+        
+        if (dataIndex > 0) {
+            const prevVal = dataset[dataIndex - 1];
+            const diff = currentVal - prevVal;
+            const sign = diff > 0 ? '▲ +' : (diff < 0 ? '▼ ' : '');
+            const diffStr = diff.toFixed(1);
+            if (diff !== 0) label += ` (${sign}${diffStr})`;
+        }
+        return label;
+    }
+
+    function renderCharts() {
+        const labels = BODY_DATA.map(d => new Date(d.d).toLocaleDateString('es-ES', {day:'numeric', month:'short'}));
+        const font = { family: "'Inter', sans-serif", size: 10 };
+        const gridColor = 'rgba(0,0,0,0.03)';
+        
         const commonOpts = {
             responsive: true, maintainAspectRatio: false,
             plugins: { 
-                legend: { display: false }, 
-                tooltip: { backgroundColor: '#fff', titleColor: '#18181B', bodyColor: '#18181B', borderColor: '#E4E4E7', borderWidth: 1, padding: 10 } 
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#18181B',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    padding: 10,
+                    cornerRadius: 8,
+                    displayColors: true,
+                    callbacks: { label: customTooltipLabel }
+                }
             },
             scales: {
-                x: { grid: { display: false }, ticks: { font: { family: fontStack, size: 11 }, color: textColor } },
-                y: { grid: { color: gridColor, borderDash: [4,4] }, ticks: { font: { family: fontStack, size: 11 }, color: textColor }, beginAtZero: false }
+                x: { grid: { display: false }, ticks: { font: font, color: '#A1A1AA' } },
+                y: { grid: { borderDash: [4,4], color: gridColor }, ticks: { font: font, color: '#A1A1AA' } }
             },
-            elements: { line: { tension: 0.4 }, point: { radius: 0, hitRadius: 20, hoverRadius: 6, hoverBorderWidth: 3 } }
+            elements: { line: { tension: 0.3 } }
         };
+
+        // Gráfico Peso
         new Chart(document.getElementById('chartWeight'), {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Peso', data: data.map(d => d.w),
-                    borderColor: '#3B82F6', backgroundColor: 'rgba(59, 130, 246, 0.08)',
-                    borderWidth: 3, fill: true, pointBackgroundColor: '#3B82F6'
+                    label: 'Peso',
+                    data: BODY_DATA.map(d => d.w),
+                    borderColor: '#18181B', borderWidth: 2,
+                    pointRadius: 4, pointBackgroundColor: '#18181B', pointHoverRadius: 6,
+                    fill: { target: 'origin', above: 'rgba(24, 24, 27, 0.02)' }
                 }]
             },
-            options: {
-                ...commonOpts,
-                scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: (v) => v + ' kg' } } },
-                plugins: { ...commonOpts.plugins, tooltip: { ...commonOpts.plugins.tooltip, callbacks: { label: (c) => c.dataset.label + ': ' + c.parsed.y + ' kg' } } }
-            }
+            options: commonOpts
         });
+
+        // Gráfico Composición
         new Chart(document.getElementById('chartComp'), {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Grasa', data: data.map(d => d.f), borderColor: '#EF4444', borderWidth: 3, pointBackgroundColor: '#EF4444' },
-                    { label: 'Músculo', data: data.map(d => d.m), borderColor: '#10B981', borderWidth: 3, pointBackgroundColor: '#10B981' }
+                    { label: 'Grasa', data: BODY_DATA.map(d => d.f), borderColor: '#EF4444', borderWidth: 2, pointRadius:4, pointBackgroundColor:'#EF4444' },
+                    { label: 'Músculo', data: BODY_DATA.map(d => d.m), borderColor: '#10B981', borderWidth: 2, pointRadius:4, pointBackgroundColor:'#10B981' }
                 ]
             },
             options: {
                 ...commonOpts,
                 plugins: { 
-                    ...commonOpts.plugins, 
-                    legend: { display: true, position:'top', align:'end', labels:{ boxWidth: 10, usePointStyle: true, font:{family:fontStack, size:12}, color: textColor } },
-                    tooltip: { ...commonOpts.plugins.tooltip, callbacks: { label: (c) => c.dataset.label + ': ' + c.parsed.y + '%' } }
-                },
-                scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: (v) => v + '%' } } }
+                    ...commonOpts.plugins,
+                    legend: { display: true, position: 'top', align:'end', labels: { usePointStyle: true, boxWidth: 8, font: font } } 
+                }
             }
         });
-    }
-
-    function renderWorkoutCard(day) {
-        const container = document.getElementById('workout-card-container');
-        let cycleIdx = (day + 4) % 9;
-        if (cycleIdx === 0) cycleIdx = 9;
-
-        const cycleData = CYCLE_MAP[cycleIdx];
-        if (!cycleData) {
-            container.innerHTML = `<div class="card">Datos de ciclo no disponibles</div>`;
-            return;
-        }
-
-        const template = WORKOUT_TEMPLATES[cycleData.key];
-        const todayLog = WORKOUT_LOG.find(l => l.day === day);
-        
-        let colorClass = 'bg-gym';
-        let borderClass = 'border-gym';
-        let titleOverride = template.title;
-
-        if (template.type === 'mar') { colorClass = 'bg-mar'; borderClass = 'border-mar'; titleOverride = 'Entrenamiento en Mar'; }
-        if (template.type === 'mob') { colorClass = 'bg-mob'; borderClass = 'border-mob'; }
-
-        let html = `
-            <div class="card" style="height:100%">
-                <div class="wo-header ${borderClass}">
-                    <div>
-                        <span class="wo-type-tag ${colorClass}">${cycleData.sub}</span>
-                        <div class="card-title" style="margin: 8px 0 0 0; font-size:1.3rem;">${titleOverride}</div>
-                    </div>
-                    <div class="wo-cycle-day">Ciclo ${cycleIdx}/9</div>
-                </div>
-        `;
-
-        if (template.type === 'gym') {
-            const historyLog = WORKOUT_LOG.filter(l => l.type === cycleData.key && l.day < day).sort((a,b) => b.day - a.day)[0];
-            
-            html += `<div class="ex-list">`;
-            template.exercises.forEach(ex => {
-                let prevData = { w: '-', s: '-' };
-                let prevNote = '';
-                if (historyLog && historyLog.data) {
-                    const found = historyLog.data.find(d => d.e === ex.id);
-                    if (found) { prevData = found; prevNote = found.n || ''; }
-                }
-                let currData = { w: null, s: null };
-                if (todayLog && todayLog.data) {
-                    const found = todayLog.data.find(d => d.e === ex.id);
-                    if (found) currData = found;
-                }
-                
-                const targetDisplay = ex.target ? `<span class="ex-target">${ex.target}</span>` : '';
-                const warmupTag = ex.type === 'warmup' ? '<span class="tag-warmup">Calentamiento</span>' : '';
-
-                html += `
-                    <div class="ex-item">
-                        <div class="ex-header-row">
-                            <div class="ex-name-group">
-                                <div class="ex-name">${ex.name}</div>
-                                ${warmupTag}
-                            </div>
-                            ${targetDisplay}
-                        </div>
-                        <div class="ex-data-grid">
-                            <div>
-                                <div class="ex-col-label">Referencia</div>
-                                <div class="ex-prev-val">${prevData.w} <span class="stat-pill">${prevData.s}</span></div>
-                                ${prevNote ? `<div style="font-size:0.75rem; color:#A1A1AA; margin-top:2px; font-style:italic;">"${prevNote}"</div>` : ''}
-                            </div>
-                            <div>
-                                <div class="ex-col-label" style="color:var(--text-primary); font-weight:700;">Hoy</div>
-                                <div class="ex-curr-val">${currData.w ? `${currData.w} <span class="stat-pill">${currData.s}</span>` : '<span style="color:#E4E4E7">---</span>'}</div>
-                                ${currData.n ? `<div class="notes-block" style="margin-top:4px;">${currData.n}</div>` : ''}
-                            </div>
-                        </div>
-                    </div>`;
-            });
-            html += `</div>`;
-        } 
-        else if (template.type === 'mar') {
-            const dist = todayLog ? todayLog.dist + ' km' : '0.0 km';
-            const time = todayLog && todayLog.time ? todayLog.time : '--';
-            const notes = todayLog ? todayLog.notes : 'Pendiente de registro...';
-            
-            // Lógica para historial MAR
-            const prevLog = WORKOUT_LOG
-                .filter(l => l.type === 'mar' && l.day < day && (l.day + 4) % 9 === cycleIdx)
-                .sort((a,b) => b.day - a.day)[0];
-
-            const prevDist = prevLog ? prevLog.dist + ' km' : '---';
-            const prevTime = prevLog && prevLog.time ? prevLog.time : '---';
-            const prevNote = prevLog && prevLog.notes ? prevLog.notes : '';
-
-            html += `
-                <div class="ex-data-grid" style="margin-bottom: 1.5rem;">
-                    <div>
-                        <div class="ex-col-label" style="border-bottom:1px solid #E4E4E7; padding-bottom:4px; margin-bottom:8px;">Referencia Anterior</div>
-                        <div style="margin-bottom: 12px;">
-                            <div class="ex-col-label">Distancia</div>
-                            <div class="ex-prev-val" style="font-size:1.1rem; font-weight:600;">${prevDist}</div>
-                        </div>
-                        <div>
-                            <div class="ex-col-label">Tiempo</div>
-                            <div class="ex-prev-val" style="font-size:1.1rem; font-weight:600;">${prevTime}</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="ex-col-label" style="border-bottom:1px solid #3B82F6; padding-bottom:4px; margin-bottom:8px; color:#3B82F6; font-weight:700;">Sesión de Hoy</div>
-                        <div style="margin-bottom: 12px;">
-                            <div class="ex-col-label">Distancia</div>
-                            <div class="ex-curr-val" style="font-size:1.6rem; color:var(--text-primary);">${dist}</div>
-                        </div>
-                        <div>
-                            <div class="ex-col-label">Tiempo</div>
-                            <div class="ex-curr-val" style="font-size:1.6rem; color:var(--text-primary);">${time}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ex-col-label">Bitácora</div>
-                ${prevNote ? `<div class="prev-notes-block">" ${prevNote} "</div>` : ''}
-                <div class="notes-block">${notes}</div>`;
-        }
-        else if (template.type === 'mob') {
-            html += `<div class="ex-list" style="margin-bottom:2rem">`;
-            let lastGroup = '';
-            
-            template.exercises.forEach(ex => {
-                if (ex.group && ex.group !== lastGroup) {
-                    html += `<div class="mob-group-title">${ex.group}</div>`;
-                    lastGroup = ex.group;
-                }
-                html += `
-                    <div class="mob-item">
-                        <div class="mob-row-top">
-                            <span style="font-size:0.9rem; font-weight:500;">${ex.name}</span>
-                            <span class="stat-pill">${ex.set}</span>
-                        </div>
-                        <div class="mob-focus">${ex.focus}</div>
-                    </div>`;
-            });
-            html += `</div>`;
-            
-            const t = todayLog && todayLog.tread ? todayLog.tread : { t:'--', i:'--', d:'--' };
-            html += `
-                <div class="ex-col-label">Caminadora / Cardio</div>
-                <div class="mob-grid">
-                    <div class="mob-box"><div class="mob-val">${t.t}</div><div class="mob-lbl">Tiempo</div></div>
-                    <div class="mob-box"><div class="mob-val">${t.i}</div><div class="mob-lbl">Inclinación</div></div>
-                    <div class="mob-box"><div class="mob-val">${t.d}</div><div class="mob-lbl">Distancia</div></div>
-                </div>
-                ${todayLog && todayLog.notes ? `<div class="notes-block">${todayLog.notes}</div>` : ''}`;
-        }
-        html += `</div>`; 
-        container.innerHTML = html;
-    }
-
-    function renderNextSessions(currentDay) {
-        const container = document.getElementById('next-sessions-container');
-        let html = '';
-        for(let i=1; i<=2; i++) {
-            let nextDay = currentDay + i;
-            let cycleIdx = (nextDay + 4) % 9;
-            if (cycleIdx === 0) cycleIdx = 9;
-
-            const cycleData = CYCLE_MAP[cycleIdx];
-            if (!cycleData) continue; 
-
-            const template = WORKOUT_TEMPLATES[cycleData.key];
-            
-            let textColorClass = 'text-gym';
-            if (template.type === 'mar') textColorClass = 'text-mar';
-            if (template.type === 'mob') textColorClass = 'text-mob';
-
-            const label = i === 1 ? 'Mañana' : 'En 2 Días';
-
-            let contentHtml = '';
-            
-            if (template.type === 'gym') {
-                contentHtml += `<div class="mini-list">`;
-                template.exercises.forEach(ex => {
-                    contentHtml += `
-                        <div class="mini-item">
-                            <span class="mini-name">${ex.name}</span>
-                            <span class="mini-target">${ex.target || '---'}</span>
-                        </div>
-                    `;
-                });
-                contentHtml += `</div>`;
-            } 
-            else if (template.type === 'mar') {
-                 contentHtml = `
-                    <div class="mini-note" style="margin-top:4px;">
-                        Objetivo Principal: <br>
-                        <strong style="font-size:0.9rem; color:var(--text-primary);">${cycleData.sub}</strong>
-                    </div>
-                 `;
-            }
-            else if (template.type === 'mob') {
-                 contentHtml += `<div class="mini-list">`;
-                 const phases = ["1. Tobillo/Pie", "2. Cadera", "3. Glúteo", "4. Core/McGill", "5. Torácica", "6. Integración"];
-                 phases.forEach(ph => {
-                    contentHtml += `<div class="mini-item"><span class="mini-name">${ph}</span></div>`;
-                 });
-                 contentHtml += `<div class="mini-note" style="margin-top:4px;">+ Caminadora</div></div>`;
-            }
-
-            html += `
-                <div class="next-card ${textColorClass}">
-                    <div class="next-header-group">
-                        <div class="next-label">${label}</div>
-                        <div class="next-title">${template.title}</div>
-                    </div>
-                    ${contentHtml}
-                </div>
-            `;
-        }
-        container.innerHTML = html;
-    }
-
-    function calculateRealAge() {
-        const today = new Date();
-        const birth = new Date(CONFIG.birthDate);
-        let age = today.getFullYear() - birth.getFullYear();
-        if (today.getMonth() < birth.getMonth() || (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())) age--;
-        return age;
     }
 
     init();
